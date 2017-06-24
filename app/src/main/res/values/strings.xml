@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">Popular Movies</string>
     <string name="main_empty_text">no popular movies found</string>
 </resources>

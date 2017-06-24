@@ -3,12 +3,10 @@
     android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
-    <android.support.v7.widget.CardView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/iv_popular_movie_poster"/>
-    </android.support.v7.widget.CardView>
+    <ImageView
+        android:padding="@dimen/padding_popular_movie_poster"
+        android:scaleType="fitXY"
+        android:layout_width="@dimen/width_popular_movie_poster"
+        android:layout_height="@dimen/height_popular_movie_poster"
+        android:id="@+id/iv_popular_movie_poster"/>
 </FrameLayout>
