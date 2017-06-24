@@ -1,5 +1,7 @@
 package com.example.myapplication.api.core;
 
+import android.support.annotation.NonNull;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 
@@ -7,10 +9,11 @@ import retrofit2.Callback;
  * @author Muhammad Umar Farisi
  * @created 24/06/2017
  */
+@SuppressWarnings("ALL")
 public class ApiRequest <T> implements Comparable<ApiRequest<T>> {
 
-    private Call<T> request;
-    private Callback<T> result;
+    private final Call<T> request;
+    private final Callback<T> result;
     private int priority;
 
     public ApiRequest(Call<T> request, Callback<T> result, int priority) {
@@ -44,8 +47,9 @@ public class ApiRequest <T> implements Comparable<ApiRequest<T>> {
 
         ApiRequest<?> that = (ApiRequest<?>) o;
 
-        if (!request.request().url().toString().equals(that.request.request().url().toString())) return false;
-        return result.getClass().getName().equals(that.result.getClass().getName());
+
+        return !request.request().url().toString().equals(that.request.request().url().toString()) &&
+                result.getClass().getName().equals(that.result.getClass().getName());
 
     }
 
@@ -57,7 +61,7 @@ public class ApiRequest <T> implements Comparable<ApiRequest<T>> {
     }
 
     @Override
-    public int compareTo(ApiRequest<T> o) {
+    public int compareTo(@NonNull ApiRequest<T> o) {
         return o.priority - priority;
     }
 

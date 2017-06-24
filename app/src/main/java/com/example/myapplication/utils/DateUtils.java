@@ -1,5 +1,7 @@
 package com.example.myapplication.utils;
 
+import android.annotation.SuppressLint;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -9,8 +11,9 @@ import java.util.Date;
  */
 public class DateUtils {
 
+    @SuppressLint("SimpleDateFormat")
     public static String datePosting(Date date){
-        return new SimpleDateFormat("d MMMM yyyy").format(date);
+        return new SimpleDateFormat("d MMM yyyy").format(date);
     }
 
 }

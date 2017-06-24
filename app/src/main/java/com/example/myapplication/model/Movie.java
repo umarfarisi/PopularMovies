@@ -9,6 +9,7 @@ import java.util.Date;
  * @author Muhammad Umar Farisi
  * @created 24/06/2017
  */
+@SuppressWarnings("ALL")
 public class Movie implements Serializable{
 
     @SerializedName("id")

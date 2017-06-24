@@ -10,6 +10,7 @@ import retrofit2.http.Query;
  * @author Muhammad Umar Farisi
  * @created 24/06/2017
  */
+@SuppressWarnings("ALL")
 public interface PopularMoviesService {
 
     @GET("movie/popular")

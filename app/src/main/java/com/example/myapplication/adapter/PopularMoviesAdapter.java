@@ -22,6 +22,7 @@ import butterknife.ButterKnife;
  * @author Muhammad Umar Farisi
  * @created 24/06/2017
  */
+@SuppressWarnings("ALL")
 public class PopularMoviesAdapter extends RecyclerView.Adapter<PopularMoviesAdapter.PopularMovieViewHolder> {
 
     private List<Movie> movies;

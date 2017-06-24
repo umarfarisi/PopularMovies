@@ -15,6 +15,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
+@SuppressWarnings("ALL")
 public class MovieDetailActivity extends AppCompatActivity {
 
     @BindView(R.id.im_movie_detail_poster)
@@ -43,8 +44,10 @@ public class MovieDetailActivity extends AppCompatActivity {
             setTitle(movie.getTitle());
             Picasso.with(this).load(ApiUtils.IMG_BASE_URL + movie.getPosterPath()).into(movieDetailPosterIV);
             movieDetailSynopsisTV.setText(movie.getSynopsis());
-            movieDetailUserRatingTV.setText(getString(R.string.movie_detail_rating_text) + movie.getUserRating());
-            movieDetailReleaseDateTV.setText(getString(R.string.movie_detail_release_date_text) + DateUtils.datePosting(movie.getReleaseDate()));
+            movieDetailUserRatingTV.setText(getString(R.string.movie_detail_rating_text));
+            movieDetailUserRatingTV.append(String.valueOf(movie.getUserRating()));
+            movieDetailReleaseDateTV.setText(getString(R.string.movie_detail_release_date_text));
+            movieDetailReleaseDateTV.append(DateUtils.datePosting(movie.getReleaseDate()));
         }
 
     }

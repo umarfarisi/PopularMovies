@@ -11,6 +11,7 @@ import retrofit2.Callback;
  * @author Muhammad Umar Farisi
  * @created 23/06/2017
  */
+@SuppressWarnings("ALL")
 public abstract class BaseResult<T> implements Callback<T> {
 
     private boolean isTryingToRequestAgainIfConnectionIsLost;

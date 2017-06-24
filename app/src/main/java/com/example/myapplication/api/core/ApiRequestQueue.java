@@ -7,6 +7,7 @@ import java.util.Queue;
  * @author Muhammad Umar Farisi
  * @created 24/06/2017
  */
+@SuppressWarnings("ALL")
 public class ApiRequestQueue {
 
     private Queue<ApiRequest> requestApis;
@@ -44,6 +45,7 @@ public class ApiRequestQueue {
     public void requestAllRequestedApi(){
         while(!requestApis.isEmpty()) {
             ApiRequest requestApi = requestApis.poll();
+            //noinspection unchecked
             requestApi.getRequest().enqueue(requestApi.getResult());
         }
     }

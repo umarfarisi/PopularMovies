@@ -41,6 +41,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
+@SuppressWarnings("ALL")
 public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.rl_main_root)
@@ -52,15 +53,15 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.rv_main_popular_movies_list)
     RecyclerView mainPopularMoviesListRV;
 
-    Snackbar networkDisconnectingSignS;
+    private Snackbar networkDisconnectingSignS;
 
-    Unbinder unbinder;
+    private Unbinder unbinder;
 
-    PopularMoviesAdapter adapter;
+    private PopularMoviesAdapter adapter;
 
-    ConnectivityChangeReceiver connectivityChangeReceiver;
+    private ConnectivityChangeReceiver connectivityChangeReceiver;
 
-    PopularMoviesListener listener = new PopularMoviesListener() {
+    private PopularMoviesListener listener = new PopularMoviesListener() {
         @Override
         public void onPopularMovieClick(Movie movie) {
             Intent intent = new Intent(MainActivity.this,MovieDetailActivity.class);
@@ -75,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         unbinder = ButterKnife.bind(this);
 
-        networkDisconnectingSignS = Snackbar.make(mainRootRL,R.string.main_network_is_discennected,Snackbar.LENGTH_INDEFINITE);
+        networkDisconnectingSignS = Snackbar.make(mainRootRL,R.string.main_network_is_disconnection,Snackbar.LENGTH_INDEFINITE);
 
         connectivityChangeReceiver = new ConnectivityChangeReceiver();
 
@@ -97,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
             ApiRequestQueue.get().requestAllRequestedApi();
 
         }else{
+            //noinspection unchecked
             adapter.addAllMovie((List<Movie>) savedInstanceState.getSerializable(Constants.MOVIES_DATA));
             mainPopularMoviesListRV.setVerticalScrollbarPosition(savedInstanceState.getInt(Constants.MOVIES_LIST_VERTICAL_SCROLLBAR_POSITION));
         }

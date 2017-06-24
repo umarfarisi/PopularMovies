@@ -3,10 +3,8 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="padding_popular_movie_poster">10dp</dimen>
-    <dimen name="elevation_popular_movie_poster">5dp</dimen>
     <dimen name="width_popular_movie_poster">150dp</dimen>
     <dimen name="height_popular_movie_poster">230dp</dimen>
-    <dimen name="height_movie_detail_thumbnail">200dp</dimen>
     <dimen name="width_movie_detail_poster">150dp</dimen>
     <dimen name="height_movie_detail_poster">230dp</dimen>
     <dimen name="margin_all_standard">5dp</dimen>
