@@ -4,6 +4,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -68,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
             //request data from server
             ApiRequest<PopularMoviesResponse> apiRequest = new ApiRequest<>(
-                    ApiHelper.service(PopularMoviesService.class).getAllPopularMovie(ApiKeyUtils.API_KEY_V3),
+                    ApiHelper.service(PopularMoviesService.class).getAllMostPopularMovie(ApiKeyUtils.API_KEY_V3),
                     new PopularMoviesResult(true, 0)
             );
             ApiRequestQueue.get().addRequestApi(apiRequest);
@@ -87,8 +89,40 @@ public class MainActivity extends AppCompatActivity {
         EventBus.getDefault().register(this);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        ApiRequest<PopularMoviesResponse> apiRequest = null;
+        switch (item.getItemId()){
+            case R.id.menu_main_sort_by_most_popular:
+                apiRequest = new ApiRequest<>(
+                        ApiHelper.service(PopularMoviesService.class).getAllMostPopularMovie(ApiKeyUtils.API_KEY_V3),
+                        new PopularMoviesResult(true, 0)
+                );
+                break;
+            case R.id.menu_main_sort_by_top_rated:
+                apiRequest = new ApiRequest<>(
+                        ApiHelper.service(PopularMoviesService.class).getAllTopRatedMovie(ApiKeyUtils.API_KEY_V3),
+                        new PopularMoviesResult(true, 0)
+                );
+                break;
+        }
+        if(apiRequest != null) {
+            ApiRequestQueue.get().addRequestApi(apiRequest);
+            ApiRequestQueue.get().requestAllRequestedApi();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     @Subscribe
     public void onLoadPopularMovies(LoadingPopularMoviesEvent event){
+        adapter.removeAllMovie();
         adapter.addAllMovie(event.getMovies());
         if(adapter.getItemCount() == 0)mainEmptyTextTV.setVisibility(View.VISIBLE);
         else mainEmptyTextTV.setVisibility(View.GONE);
