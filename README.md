@@ -1,0 +1,3 @@
+# PopularMovies
+The app from this repository has functionality for displaying list of most popular or top rated movies. The app retrieve data from API of www.themoviedb.org.
+Before using this app, you need to get your API Key from themoviedb.org. There are two API Key which will be used in this app namely API Key v3 Auth and API Key v4 Auth, the recently used in this app is API Key v3 Auth. After getting your API Key, add your API Key to constant in class com.example.myapplication.utils.ApiKeyUtils. In that class, add your API Key v3 Auth to API_KEY_V3 constant and add your API Key v4 Auth to API_KEY_V4 constant.
