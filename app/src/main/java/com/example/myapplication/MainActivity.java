@@ -4,7 +4,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -77,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
         }else{
             adapter.addAllMovie((List<Movie>) savedInstanceState.getSerializable(Constants.POPULAR_MOVIES_DATA));
+            mainPopularMoviesListRV.setVerticalScrollbarPosition(savedInstanceState.getInt(Constants.POPULAR_MOVIES_LIST_VERTICAL_SCROLLBAR_POSITION));
         }
 
     }
@@ -115,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putSerializable(Constants.POPULAR_MOVIES_DATA, (Serializable) adapter.getAllMovie());
+        outState.putInt(Constants.POPULAR_MOVIES_LIST_VERTICAL_SCROLLBAR_POSITION,mainPopularMoviesListRV.getVerticalScrollbarPosition());
     }
 
     @Override
