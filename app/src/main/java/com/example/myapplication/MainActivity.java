@@ -1,5 +1,8 @@
 package com.example.myapplication;
 
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -8,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.myapplication.adapter.PopularMoviesAdapter;
@@ -20,9 +24,11 @@ import com.example.myapplication.api.response.PopularMoviesResponse;
 import com.example.myapplication.api.result.PopularMoviesResult;
 import com.example.myapplication.api.service.PopularMoviesService;
 import com.example.myapplication.model.Movie;
+import com.example.myapplication.receiver.ConnectivityChangeReceiver;
 import com.example.myapplication.receiver.event.ConnectivityChangedEvent;
 import com.example.myapplication.utils.ApiKeyUtils;
 import com.example.myapplication.utils.Constants;
+import com.example.myapplication.utils.NetworkUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -36,6 +42,8 @@ import butterknife.Unbinder;
 
 public class MainActivity extends AppCompatActivity {
 
+    @BindView(R.id.rl_main_root)
+    RelativeLayout mainRootRL;
     @BindView(R.id.pb_main_progress_sign)
     ProgressBar mainProgressSignPB;
     @BindView(R.id.tv_main_empty_text)
@@ -43,9 +51,13 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.rv_main_popular_movies_list)
     RecyclerView mainPopularMoviesListRV;
 
+    Snackbar networkDisconnectingSignS;
+
     Unbinder unbinder;
 
     PopularMoviesAdapter adapter;
+
+    ConnectivityChangeReceiver connectivityChangeReceiver;
 
     PopularMoviesListener listener = new PopularMoviesListener() {
         @Override
@@ -60,12 +72,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         unbinder = ButterKnife.bind(this);
 
+        networkDisconnectingSignS = Snackbar.make(mainRootRL,R.string.main_network_is_discennected,Snackbar.LENGTH_INDEFINITE);
+
+        connectivityChangeReceiver = new ConnectivityChangeReceiver();
+
         //set up mainPopularListRV
         adapter = new PopularMoviesAdapter(listener);
         mainPopularMoviesListRV.setLayoutManager(new GridLayoutManager(this, Constants.POPULAR_MOVIES_GRID_COLUMN));
         mainPopularMoviesListRV.setAdapter(adapter);
 
         if(savedInstanceState == null) {
+
             mainProgressSignPB.setVisibility(View.VISIBLE);
 
             //request data from server
@@ -86,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        registerReceiver(connectivityChangeReceiver,new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
         EventBus.getDefault().register(this);
     }
 
@@ -97,26 +115,28 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        ApiRequest<PopularMoviesResponse> apiRequest = null;
-        switch (item.getItemId()){
-            case R.id.menu_main_sort_by_most_popular:
-                apiRequest = new ApiRequest<>(
-                        ApiHelper.service(PopularMoviesService.class).getAllMostPopularMovie(ApiKeyUtils.API_KEY_V3),
-                        new PopularMoviesResult(true, 0)
-                );
-                break;
-            case R.id.menu_main_sort_by_top_rated:
-                apiRequest = new ApiRequest<>(
-                        ApiHelper.service(PopularMoviesService.class).getAllTopRatedMovie(ApiKeyUtils.API_KEY_V3),
-                        new PopularMoviesResult(true, 0)
-                );
-                break;
+        if(NetworkUtils.isNetworkConnected()) {
+            ApiRequest<PopularMoviesResponse> apiRequest = null;
+            switch (item.getItemId()) {
+                case R.id.menu_main_sort_by_most_popular:
+                    apiRequest = new ApiRequest<>(
+                            ApiHelper.service(PopularMoviesService.class).getAllMostPopularMovie(ApiKeyUtils.API_KEY_V3),
+                            new PopularMoviesResult(true, 0)
+                    );
+                    break;
+                case R.id.menu_main_sort_by_top_rated:
+                    apiRequest = new ApiRequest<>(
+                            ApiHelper.service(PopularMoviesService.class).getAllTopRatedMovie(ApiKeyUtils.API_KEY_V3),
+                            new PopularMoviesResult(true, 0)
+                    );
+                    break;
+            }
+            if (apiRequest != null) {
+                ApiRequestQueue.get().addRequestApi(apiRequest);
+                ApiRequestQueue.get().requestAllRequestedApi();
+                mainProgressSignPB.setVisibility(View.VISIBLE);
+            }
         }
-        if(apiRequest != null) {
-            ApiRequestQueue.get().addRequestApi(apiRequest);
-            ApiRequestQueue.get().requestAllRequestedApi();
-        }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -133,14 +153,19 @@ public class MainActivity extends AppCompatActivity {
     public void onConnectivityChange(ConnectivityChangedEvent event) {
         if(event.isConnected()){
             ApiRequestQueue.get().requestAllRequestedApi();
-            if(adapter.getItemCount() == 0)mainProgressSignPB.setVisibility(View.VISIBLE);
+            if(adapter.getItemCount() == 0){
+                mainProgressSignPB.setVisibility(View.VISIBLE);
+            }
+            networkDisconnectingSignS.dismiss();
         }else{
-            if(mainProgressSignPB.getVisibility() == View.VISIBLE)mainProgressSignPB.setVisibility(View.GONE);
+            mainProgressSignPB.setVisibility(View.GONE);
+            networkDisconnectingSignS.show();
         }
     }
 
     @Override
     protected void onStop() {
+        unregisterReceiver(connectivityChangeReceiver);
         EventBus.getDefault().unregister(this);
         super.onStop();
     }
