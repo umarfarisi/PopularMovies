@@ -6,6 +6,7 @@
     tools:context="com.example.myapplication.MainActivity">
 
     <ProgressBar
+        android:visibility="gone"
         android:indeterminate="true"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"

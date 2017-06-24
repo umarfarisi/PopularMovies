@@ -62,6 +62,10 @@ public class PopularMoviesAdapter extends RecyclerView.Adapter<PopularMoviesAdap
         movie.setUserRating(newMovie.getUserRating());
     }
 
+    public List<Movie> getAllMovie() {
+        return movies;
+    }
+
     @Override
     public PopularMovieViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new PopularMovieViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_popular_movies,parent,false));

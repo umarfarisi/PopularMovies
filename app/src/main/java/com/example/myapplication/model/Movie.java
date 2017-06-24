@@ -2,13 +2,14 @@ package com.example.myapplication.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * @author Muhammad Umar Farisi
  * @created 24/06/2017
  */
-public class Movie {
+public class Movie implements Serializable{
 
     @SerializedName("id")
     private int id;

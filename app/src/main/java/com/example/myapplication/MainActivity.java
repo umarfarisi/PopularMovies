@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -24,6 +25,9 @@ import com.example.myapplication.utils.Constants;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+
+import java.io.Serializable;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -60,15 +64,20 @@ public class MainActivity extends AppCompatActivity {
         mainPopularMoviesListRV.setLayoutManager(new GridLayoutManager(this, Constants.POPULAR_MOVIES_GRID_COLUMN));
         mainPopularMoviesListRV.setAdapter(adapter);
 
-        mainProgressSignPB.setVisibility(View.VISIBLE);
+        if(savedInstanceState == null) {
+            mainProgressSignPB.setVisibility(View.VISIBLE);
 
-        //request data from server
-        ApiRequest<PopularMoviesResponse> apiRequest = new ApiRequest<>(
-                ApiHelper.service(PopularMoviesService.class).getAllPopularMovie(ApiKeyUtils.API_KEY_V3),
-                new PopularMoviesResult(true,0)
-        );
-        ApiRequestQueue.get().addRequestApi(apiRequest);
-        ApiRequestQueue.get().requestAllRequestedApi();
+            //request data from server
+            ApiRequest<PopularMoviesResponse> apiRequest = new ApiRequest<>(
+                    ApiHelper.service(PopularMoviesService.class).getAllPopularMovie(ApiKeyUtils.API_KEY_V3),
+                    new PopularMoviesResult(true, 0)
+            );
+            ApiRequestQueue.get().addRequestApi(apiRequest);
+            ApiRequestQueue.get().requestAllRequestedApi();
+
+        }else{
+            adapter.addAllMovie((List<Movie>) savedInstanceState.getSerializable(Constants.POPULAR_MOVIES_DATA));
+        }
 
     }
 
@@ -102,6 +111,11 @@ public class MainActivity extends AppCompatActivity {
         super.onStop();
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable(Constants.POPULAR_MOVIES_DATA, (Serializable) adapter.getAllMovie());
+    }
 
     @Override
     protected void onDestroy() {
