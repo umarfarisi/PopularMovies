@@ -4,4 +4,7 @@
     <string name="main_sort_by_most_popular">Sort by Most Popular</string>
     <string name="main_sort_by_top_rated">Sort by Top Rated</string>
     <string name="main_network_is_discennected">network is disconnected</string>
+    <string name="movie_detail_rating_text">Rating: </string>
+    <string name="movie_detail_release_date_text">Release date: </string>
+    <string name="movie_detail_synopsis_text">Synopsis: </string>
 </resources>

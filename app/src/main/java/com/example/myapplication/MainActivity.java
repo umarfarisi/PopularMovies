@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.support.design.widget.Snackbar;
@@ -62,7 +63,9 @@ public class MainActivity extends AppCompatActivity {
     PopularMoviesListener listener = new PopularMoviesListener() {
         @Override
         public void onPopularMovieClick(Movie movie) {
-            //TODO
+            Intent intent = new Intent(MainActivity.this,MovieDetailActivity.class);
+            intent.putExtra(Constants.MOVIE,movie);
+            MainActivity.this.startActivity(intent);
         }
     };
 
@@ -78,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
 
         //set up mainPopularListRV
         adapter = new PopularMoviesAdapter(listener);
-        mainPopularMoviesListRV.setLayoutManager(new GridLayoutManager(this, Constants.POPULAR_MOVIES_GRID_COLUMN));
+        mainPopularMoviesListRV.setLayoutManager(new GridLayoutManager(this, Constants.MOVIES_GRID_COLUMN));
         mainPopularMoviesListRV.setAdapter(adapter);
 
         if(savedInstanceState == null) {
@@ -94,8 +97,8 @@ public class MainActivity extends AppCompatActivity {
             ApiRequestQueue.get().requestAllRequestedApi();
 
         }else{
-            adapter.addAllMovie((List<Movie>) savedInstanceState.getSerializable(Constants.POPULAR_MOVIES_DATA));
-            mainPopularMoviesListRV.setVerticalScrollbarPosition(savedInstanceState.getInt(Constants.POPULAR_MOVIES_LIST_VERTICAL_SCROLLBAR_POSITION));
+            adapter.addAllMovie((List<Movie>) savedInstanceState.getSerializable(Constants.MOVIES_DATA));
+            mainPopularMoviesListRV.setVerticalScrollbarPosition(savedInstanceState.getInt(Constants.MOVIES_LIST_VERTICAL_SCROLLBAR_POSITION));
         }
 
     }
@@ -173,8 +176,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putSerializable(Constants.POPULAR_MOVIES_DATA, (Serializable) adapter.getAllMovie());
-        outState.putInt(Constants.POPULAR_MOVIES_LIST_VERTICAL_SCROLLBAR_POSITION,mainPopularMoviesListRV.getVerticalScrollbarPosition());
+        outState.putSerializable(Constants.MOVIES_DATA, (Serializable) adapter.getAllMovie());
+        outState.putInt(Constants.MOVIES_LIST_VERTICAL_SCROLLBAR_POSITION,mainPopularMoviesListRV.getVerticalScrollbarPosition());
     }
 
     @Override
