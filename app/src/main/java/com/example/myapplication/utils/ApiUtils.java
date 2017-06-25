@@ -8,6 +8,6 @@ public class ApiUtils {
 
     public static final String API_BASE_URL = "http://api.themoviedb.org/3/";
 
-    public static final String IMG_BASE_URL = "http://image.tmdb.org/t/p/w185/";
+    public static final String IMG_BASE_URL = "http://image.tmdb.org/t/p/w780/";
 
 }
