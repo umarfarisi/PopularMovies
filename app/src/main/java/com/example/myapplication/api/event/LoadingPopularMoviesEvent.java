@@ -2,7 +2,7 @@ package com.example.myapplication.api.event;
 
 import com.example.myapplication.model.Movie;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * @author Muhammad Umar Farisi
@@ -13,9 +13,9 @@ public class LoadingPopularMoviesEvent {
 
     private int currentPage;
     private int totalPage;
-    private List<Movie> movies;
+    private ArrayList<Movie> movies;
 
-    public LoadingPopularMoviesEvent(int currentPage, int totalPage, List<Movie> movies) {
+    public LoadingPopularMoviesEvent(int currentPage, int totalPage, ArrayList<Movie> movies) {
         this.currentPage = currentPage;
         this.totalPage = totalPage;
         this.movies = movies;
@@ -29,7 +29,7 @@ public class LoadingPopularMoviesEvent {
         return totalPage;
     }
 
-    public List<Movie> getMovies() {
+    public ArrayList<Movie> getMovies() {
         return movies;
     }
 }

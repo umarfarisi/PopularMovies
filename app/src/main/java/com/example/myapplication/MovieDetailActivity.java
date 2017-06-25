@@ -38,7 +38,7 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         unbinder = ButterKnife.bind(this);
 
-        movie = (Movie) getIntent().getSerializableExtra(Constants.MOVIE);
+        movie = (Movie) getIntent().getParcelableExtra(Constants.MOVIE);
 
         if(movie != null) {
             setTitle(movie.getTitle());

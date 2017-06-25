@@ -3,7 +3,7 @@ package com.example.myapplication.api.response;
 import com.example.myapplication.model.Movie;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * @author Muhammad Umar Farisi
@@ -19,7 +19,7 @@ public class PopularMoviesResponse {
     @SerializedName("total_pages")
     private int totalPages;
     @SerializedName("results")
-    private List<Movie> movies;
+    private ArrayList<Movie> movies;
 
     public PopularMoviesResponse(){
 
@@ -37,7 +37,7 @@ public class PopularMoviesResponse {
         return totalPages;
     }
 
-    public List<Movie> getMovies() {
+    public ArrayList<Movie> getMovies() {
         return movies;
     }
 }

@@ -13,7 +13,6 @@ import com.example.myapplication.utils.ApiUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,7 +24,7 @@ import butterknife.ButterKnife;
 @SuppressWarnings("ALL")
 public class PopularMoviesAdapter extends RecyclerView.Adapter<PopularMoviesAdapter.PopularMovieViewHolder> {
 
-    private List<Movie> movies;
+    private ArrayList<Movie> movies;
     private PopularMoviesListener listener;
 
     public PopularMoviesAdapter(PopularMoviesListener listener) {
@@ -33,7 +32,7 @@ public class PopularMoviesAdapter extends RecyclerView.Adapter<PopularMoviesAdap
         this.listener = listener;
     }
 
-    public void addAllMovie(List<Movie> newMovies){
+    public void addAllMovie(ArrayList<Movie> newMovies){
         movies.addAll(newMovies);
         notifyDataSetChanged();
     }
@@ -63,7 +62,7 @@ public class PopularMoviesAdapter extends RecyclerView.Adapter<PopularMoviesAdap
         movie.setUserRating(newMovie.getUserRating());
     }
 
-    public List<Movie> getAllMovie() {
+    public ArrayList<Movie> getAllMovie() {
         return movies;
     }
 

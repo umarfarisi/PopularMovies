@@ -1,8 +1,10 @@
 package com.example.myapplication.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
-import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -10,7 +12,7 @@ import java.util.Date;
  * @created 24/06/2017
  */
 @SuppressWarnings("ALL")
-public class Movie implements Serializable{
+public class Movie implements Parcelable {
 
     @SerializedName("id")
     private int id;
@@ -27,7 +29,7 @@ public class Movie implements Serializable{
     @SerializedName("release_date")
     private Date releaseDate;
 
-    public Movie(int id, String title, String posterPath, String thumbnailPath, String synopsis, int userRating, Date releaseDate) {
+    public Movie(int id, String title, String posterPath, String thumbnailPath, String synopsis, double userRating, Date releaseDate) {
         this.id = id;
         this.title = title;
         this.posterPath = posterPath;
@@ -123,4 +125,39 @@ public class Movie implements Serializable{
                 ", releaseDate=" + releaseDate +
                 '}';
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(title);
+        dest.writeString(posterPath);
+        dest.writeString(thumbnailPath);
+        dest.writeString(synopsis);
+        dest.writeDouble(userRating);
+        dest.writeSerializable(releaseDate);
+    }
+
+    public static final Creator<Movie> CREATOR = new Creator<Movie>() {
+        @Override
+        public Movie createFromParcel(Parcel source) {
+            return new Movie(source.readInt()
+                    ,source.readString()
+                    ,source.readString()
+                    ,source.readString()
+                    ,source.readString()
+                    ,source.readDouble()
+                    , (Date) source.readSerializable());
+        }
+
+        @Override
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
+
 }

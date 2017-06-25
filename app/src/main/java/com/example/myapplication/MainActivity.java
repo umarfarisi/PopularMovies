@@ -3,6 +3,7 @@ package com.example.myapplication;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
+import android.os.Parcelable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -33,9 +34,6 @@ import com.example.myapplication.utils.NetworkUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
-
-import java.io.Serializable;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -99,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
 
         }else{
             //noinspection unchecked
-            adapter.addAllMovie((List<Movie>) savedInstanceState.getSerializable(Constants.MOVIES_DATA));
+            adapter.addAllMovie(savedInstanceState.<Movie>getParcelableArrayList(Constants.MOVIES_DATA));
             mainPopularMoviesListRV.setVerticalScrollbarPosition(savedInstanceState.getInt(Constants.MOVIES_LIST_VERTICAL_SCROLLBAR_POSITION));
         }
 
@@ -178,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putSerializable(Constants.MOVIES_DATA, (Serializable) adapter.getAllMovie());
+        outState.putParcelableArrayList(Constants.MOVIES_DATA,  adapter.getAllMovie());
         outState.putInt(Constants.MOVIES_LIST_VERTICAL_SCROLLBAR_POSITION,mainPopularMoviesListRV.getVerticalScrollbarPosition());
     }
 
