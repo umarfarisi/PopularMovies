@@ -4,6 +4,7 @@ import com.example.myapplication.api.response.PopularMoviesResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 /**
@@ -13,10 +14,10 @@ import retrofit2.http.Query;
 @SuppressWarnings("ALL")
 public interface PopularMoviesService {
 
-    @GET("movie/popular")
-    Call<PopularMoviesResponse> getAllMostPopularMovie(@Query("api_key") String apiKey);
+    public static final String ORDER_BY_POPULAR = "popular";
+    public static final String ORDER_BY_TOP_RATED = "top_rated";
 
-    @GET("movie/top_rated")
-    Call<PopularMoviesResponse> getAllTopRatedMovie(@Query("api_key") String apiKey);
+    @GET("movie/{sort}")
+    Call<PopularMoviesResponse> getMovies(@Path("sort") String order, @Query("api_key") String apiKey);
 
 }

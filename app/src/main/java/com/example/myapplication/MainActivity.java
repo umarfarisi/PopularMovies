@@ -3,7 +3,6 @@ package com.example.myapplication;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
-import android.os.Parcelable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -89,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
 
             //request data from server
             ApiRequest<PopularMoviesResponse> apiRequest = new ApiRequest<>(
-                    ApiHelper.service(PopularMoviesService.class).getAllMostPopularMovie(ApiKeyUtils.API_KEY_V3),
+                    ApiHelper.service(PopularMoviesService.class).getMovies(PopularMoviesService.ORDER_BY_POPULAR,ApiKeyUtils.API_KEY_V3),
                     new PopularMoviesResult(true, 0)
             );
             ApiRequestQueue.get().addRequestApi(apiRequest);
@@ -123,13 +122,13 @@ public class MainActivity extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.menu_main_sort_by_most_popular:
                     apiRequest = new ApiRequest<>(
-                            ApiHelper.service(PopularMoviesService.class).getAllMostPopularMovie(ApiKeyUtils.API_KEY_V3),
+                            ApiHelper.service(PopularMoviesService.class).getMovies(PopularMoviesService.ORDER_BY_POPULAR , ApiKeyUtils.API_KEY_V3),
                             new PopularMoviesResult(true, 0)
                     );
                     break;
                 case R.id.menu_main_sort_by_top_rated:
                     apiRequest = new ApiRequest<>(
-                            ApiHelper.service(PopularMoviesService.class).getAllTopRatedMovie(ApiKeyUtils.API_KEY_V3),
+                            ApiHelper.service(PopularMoviesService.class).getMovies(PopularMoviesService.ORDER_BY_TOP_RATED , ApiKeyUtils.API_KEY_V3),
                             new PopularMoviesResult(true, 0)
                     );
                     break;
