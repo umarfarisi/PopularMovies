@@ -24,6 +24,7 @@
             android:fitsSystemWindows="true">
 
             <ImageView
+                android:contentDescription="@string/movies_poster_description"
                 android:id="@+id/im_movie_detail_poster"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/height_movie_detail_poster"
