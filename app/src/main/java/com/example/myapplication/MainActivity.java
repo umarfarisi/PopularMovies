@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,6 +42,8 @@ import butterknife.Unbinder;
 @SuppressWarnings("ALL")
 public class MainActivity extends AppCompatActivity {
 
+    @BindView(R.id.tb_main_toolbar)
+    Toolbar mainToolbarTB;
     @BindView(R.id.rl_main_root)
     RelativeLayout mainRootRL;
     @BindView(R.id.pb_main_progress_sign)
@@ -72,6 +75,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         unbinder = ButterKnife.bind(this);
+
+        setSupportActionBar(mainToolbarTB);
 
         networkDisconnectingSignS = Snackbar.make(mainRootRL,R.string.main_network_is_disconnection,Snackbar.LENGTH_INDEFINITE);
 
