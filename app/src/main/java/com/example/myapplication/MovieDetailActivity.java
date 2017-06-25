@@ -45,13 +45,14 @@ public class MovieDetailActivity extends AppCompatActivity {
         unbinder = ButterKnife.bind(this);
 
         setSupportActionBar(movieDetailToolbarTB);
+        getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         movie = (Movie) getIntent().getParcelableExtra(Constants.MOVIE);
 
         if(movie != null) {
 
             movieDetailToolbarContainerCB.setTitle(movie.getTitle());
-            movieDetailToolbarContainerCB.setExpandedTitleColor(android.R.color.transparent);
 
             Picasso.with(this).load(ApiUtils.IMG_BASE_URL + movie.getThumbnailPath()).into(movieDetailPosterIV);
             movieDetailSynopsisTV.setText(movie.getSynopsis());
