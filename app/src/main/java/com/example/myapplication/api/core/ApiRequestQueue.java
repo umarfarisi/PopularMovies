@@ -46,7 +46,7 @@ public class ApiRequestQueue {
         while(!requestApis.isEmpty()) {
             ApiRequest requestApi = requestApis.poll();
             //noinspection unchecked
-            requestApi.getRequest().enqueue(requestApi.getResult());
+            requestApi.getRequest().enqueue(requestApi.getCallback());
         }
     }
 

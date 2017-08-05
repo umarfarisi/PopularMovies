@@ -1,32 +1,26 @@
 package com.example.myapplication.api.result;
 
-import com.example.myapplication.api.core.ApiRequest;
-import com.example.myapplication.api.core.ApiRequestQueue;
-import com.example.myapplication.utils.NetworkUtils;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-
 /**
  * @author Muhammad Umar Farisi
- * @created 23/06/2017
+ * @created 06/08/2017
  */
-@SuppressWarnings("ALL")
-public abstract class BaseResult<T> implements Callback<T> {
 
-    private boolean isTryingToRequestAgainIfConnectionIsLost;
-    private int apiRequestPriority;
+public class BaseResult<R> {
+    private R response;
 
-    public BaseResult(boolean isTryingToRequestAgainIfConnectionIsLost, int apiRequestPriority) {
-        this.isTryingToRequestAgainIfConnectionIsLost = isTryingToRequestAgainIfConnectionIsLost;
-        this.apiRequestPriority = apiRequestPriority;
+    public BaseResult(R response) {
+        this.response = response;
     }
 
-    @Override
-    public void onFailure(Call<T> call, Throwable t) {
-        boolean isFailedToRequest = !NetworkUtils.isNetworkConnected();
-        if(isFailedToRequest && isTryingToRequestAgainIfConnectionIsLost){
-            ApiRequestQueue.get().addRequestApi(new ApiRequest<>(call.clone(),this, apiRequestPriority));
-        }
+    public BaseResult(){
+
+    }
+
+    public R getResponse() {
+        return response;
+    }
+
+    public void setResponse(R response) {
+        this.response = response;
     }
 }

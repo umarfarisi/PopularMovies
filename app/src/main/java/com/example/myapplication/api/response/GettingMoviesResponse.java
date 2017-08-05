@@ -10,7 +10,7 @@ import java.util.ArrayList;
  * @created 24/06/2017
  */
 @SuppressWarnings("ALL")
-public class PopularMoviesResponse {
+public class GettingMoviesResponse {
 
     @SerializedName("page")
     private int page;
@@ -21,7 +21,7 @@ public class PopularMoviesResponse {
     @SerializedName("results")
     private ArrayList<Movie> movies;
 
-    public PopularMoviesResponse(){
+    public GettingMoviesResponse(){
 
     }
 

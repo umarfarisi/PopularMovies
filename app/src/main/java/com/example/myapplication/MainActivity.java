@@ -3,9 +3,9 @@ package com.example.myapplication;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
+import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -21,10 +21,9 @@ import com.example.myapplication.adapter.listener.PopularMoviesListener;
 import com.example.myapplication.api.core.ApiHelper;
 import com.example.myapplication.api.core.ApiRequest;
 import com.example.myapplication.api.core.ApiRequestQueue;
-import com.example.myapplication.api.event.LoadingPopularMoviesEvent;
-import com.example.myapplication.api.response.PopularMoviesResponse;
-import com.example.myapplication.api.result.PopularMoviesResult;
-import com.example.myapplication.api.service.PopularMoviesService;
+import com.example.myapplication.api.response.GettingMoviesResponse;
+import com.example.myapplication.api.result.MoviesResult;
+import com.example.myapplication.api.service.MoviesService;
 import com.example.myapplication.model.Movie;
 import com.example.myapplication.receiver.ConnectivityChangeReceiver;
 import com.example.myapplication.receiver.event.ConnectivityChangedEvent;
@@ -38,6 +37,7 @@ import org.greenrobot.eventbus.Subscribe;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import retrofit2.Call;
 
 @SuppressWarnings("ALL")
 public class MainActivity extends AppCompatActivity {
@@ -92,9 +92,10 @@ public class MainActivity extends AppCompatActivity {
             mainProgressSignPB.setVisibility(View.VISIBLE);
 
             //request data from server
-            ApiRequest<PopularMoviesResponse> apiRequest = new ApiRequest<>(
-                    ApiHelper.service(PopularMoviesService.class).getMovies(PopularMoviesService.ORDER_BY_POPULAR,ApiKeyUtils.API_KEY_V3),
-                    new PopularMoviesResult(true, 0)
+            ApiRequest<GettingMoviesResponse> apiRequest = new ApiRequest<>(
+                    ApiHelper.service(MoviesService.class).getMovies(MoviesService.ORDER_BY_POPULAR,ApiKeyUtils.API_KEY_V3),
+                    new MoviesResult.GettingMoviesResult(),
+                    true
             );
             ApiRequestQueue.get().addRequestApi(apiRequest);
             ApiRequestQueue.get().requestAllRequestedApi();
@@ -123,23 +124,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(NetworkUtils.isNetworkConnected()) {
-            ApiRequest<PopularMoviesResponse> apiRequest = null;
+            Call<GettingMoviesResponse> service = null;
             switch (item.getItemId()) {
                 case R.id.menu_main_sort_by_most_popular:
-                    apiRequest = new ApiRequest<>(
-                            ApiHelper.service(PopularMoviesService.class).getMovies(PopularMoviesService.ORDER_BY_POPULAR , ApiKeyUtils.API_KEY_V3),
-                            new PopularMoviesResult(true, 0)
-                    );
+                    service = ApiHelper.service(MoviesService.class).getMovies(MoviesService.ORDER_BY_POPULAR , ApiKeyUtils.API_KEY_V3);
                     break;
                 case R.id.menu_main_sort_by_top_rated:
-                    apiRequest = new ApiRequest<>(
-                            ApiHelper.service(PopularMoviesService.class).getMovies(PopularMoviesService.ORDER_BY_TOP_RATED , ApiKeyUtils.API_KEY_V3),
-                            new PopularMoviesResult(true, 0)
-                    );
+                    service = ApiHelper.service(MoviesService.class).getMovies(MoviesService.ORDER_BY_TOP_RATED , ApiKeyUtils.API_KEY_V3);
                     break;
             }
-            if (apiRequest != null) {
-                ApiRequestQueue.get().addRequestApi(apiRequest);
+            if(service != null) {
+                ApiRequestQueue.get().addRequestApi(new ApiRequest<>(service, new MoviesResult.GettingMoviesResult(), true));
                 ApiRequestQueue.get().requestAllRequestedApi();
                 mainProgressSignPB.setVisibility(View.VISIBLE);
             }
@@ -148,9 +143,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Subscribe
-    public void onLoadPopularMovies(LoadingPopularMoviesEvent event){
-        adapter.removeAllMovie();
-        adapter.addAllMovie(event.getMovies());
+    public void onLoadPopularMovies(MoviesResult.GettingMoviesResult result){
+        if(result.getResponse() != null) {
+            adapter.removeAllMovie();
+            adapter.addAllMovie(result.getResponse().getMovies());
+        }
         if(adapter.getItemCount() == 0)mainEmptyTextTV.setVisibility(View.VISIBLE);
         else mainEmptyTextTV.setVisibility(View.GONE);
         mainProgressSignPB.setVisibility(View.GONE);
