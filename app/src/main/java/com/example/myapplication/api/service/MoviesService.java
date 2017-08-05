@@ -1,6 +1,6 @@
 package com.example.myapplication.api.service;
 
-import com.example.myapplication.api.response.GettingMoviesResponse;
+import com.example.myapplication.api.response.movies.GettingMoviesResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

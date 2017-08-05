@@ -1,4 +1,4 @@
-package com.example.myapplication.api.response;
+package com.example.myapplication.api.response.movies;
 
 import com.example.myapplication.model.Movie;
 import com.google.gson.annotations.SerializedName;

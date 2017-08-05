@@ -1,6 +1,6 @@
 package com.example.myapplication.api.result;
 
-import com.example.myapplication.api.response.GettingMoviesResponse;
+import com.example.myapplication.api.response.movies.GettingMoviesResponse;
 
 /**
  * @author Muhammad Umar Farisi

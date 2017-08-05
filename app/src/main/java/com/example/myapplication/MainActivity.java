@@ -21,7 +21,7 @@ import com.example.myapplication.adapter.listener.PopularMoviesListener;
 import com.example.myapplication.api.core.ApiHelper;
 import com.example.myapplication.api.core.ApiRequest;
 import com.example.myapplication.api.core.ApiRequestQueue;
-import com.example.myapplication.api.response.GettingMoviesResponse;
+import com.example.myapplication.api.response.movies.GettingMoviesResponse;
 import com.example.myapplication.api.result.MoviesResult;
 import com.example.myapplication.api.service.MoviesService;
 import com.example.myapplication.model.Movie;
