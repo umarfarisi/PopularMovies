@@ -1,11 +1,8 @@
 package com.example.myapplication;
 
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -25,13 +22,11 @@ import com.example.myapplication.api.response.movies.GettingMoviesResponse;
 import com.example.myapplication.api.result.MoviesResult;
 import com.example.myapplication.api.service.MoviesService;
 import com.example.myapplication.model.Movie;
-import com.example.myapplication.receiver.ConnectivityChangeReceiver;
 import com.example.myapplication.receiver.event.ConnectivityChangedEvent;
 import com.example.myapplication.utils.ApiKeyUtils;
 import com.example.myapplication.utils.Constants;
 import com.example.myapplication.utils.NetworkUtils;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import butterknife.BindView;
@@ -40,7 +35,7 @@ import butterknife.Unbinder;
 import retrofit2.Call;
 
 @SuppressWarnings("ALL")
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     @BindView(R.id.tb_main_toolbar)
     Toolbar mainToolbarTB;
@@ -58,8 +53,6 @@ public class MainActivity extends AppCompatActivity {
     private Unbinder unbinder;
 
     private PopularMoviesAdapter adapter;
-
-    private ConnectivityChangeReceiver connectivityChangeReceiver;
 
     private PopularMoviesListener listener = new PopularMoviesListener() {
         @Override
@@ -79,8 +72,6 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(mainToolbarTB);
 
         networkDisconnectingSignS = Snackbar.make(mainRootRL,R.string.main_network_is_disconnection,Snackbar.LENGTH_INDEFINITE);
-
-        connectivityChangeReceiver = new ConnectivityChangeReceiver();
 
         //set up mainPopularListRV
         adapter = new PopularMoviesAdapter(listener);
@@ -106,13 +97,6 @@ public class MainActivity extends AppCompatActivity {
             mainPopularMoviesListRV.setVerticalScrollbarPosition(savedInstanceState.getInt(Constants.MOVIES_LIST_VERTICAL_SCROLLBAR_POSITION));
         }
 
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        registerReceiver(connectivityChangeReceiver,new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
-        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -165,13 +149,6 @@ public class MainActivity extends AppCompatActivity {
             mainProgressSignPB.setVisibility(View.GONE);
             networkDisconnectingSignS.show();
         }
-    }
-
-    @Override
-    protected void onStop() {
-        unregisterReceiver(connectivityChangeReceiver);
-        EventBus.getDefault().unregister(this);
-        super.onStop();
     }
 
     @Override
