@@ -1,7 +1,6 @@
 package com.example.myapplication.api.core;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.example.myapplication.api.result.BaseResult;
 import com.example.myapplication.utils.NetworkUtils;
@@ -29,16 +28,12 @@ public class ApiRequest <T> implements Comparable<ApiRequest<T>> {
         this.callback = new Callback<T>() {
             @Override
             public void onResponse(Call<T> call, Response<T> response) {
-                Log.d("buggggg","onResponse, isSuccessfull: "+response.isSuccessful());
-                Log.d("buggggg","onResponse, message: "+response.message());
-                Log.d("buggggg","onResponse, code: "+response.code());
                 result.setResponse(response.body());
                 EventBus.getDefault().post(result);
             }
 
             @Override
             public void onFailure(Call<T> call, Throwable t) {
-                Log.d("buggggg","onFailure, message: "+t.getMessage());
                 boolean isFailedToRequest = !NetworkUtils.isNetworkConnected();
                 if(isFailedToRequest && isTryingToRequestAgainIfConnectionIsLost){
                     ApiRequestQueue.get().addRequestApi(new ApiRequest<>(call.clone(), result,true, priority));

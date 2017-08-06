@@ -3,6 +3,7 @@ package com.example.myapplication.api.response.detail.movie;
 import com.example.myapplication.model.Review;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,7 +18,7 @@ public class GettingReviewsResponse {
     @SerializedName("page")
     private int page;
     @SerializedName("results")
-    private List<Review> results;
+    private ArrayList<Review> results;
     @SerializedName("total_pages")
     private int totalPage;
     @SerializedName("total_results")
@@ -35,7 +36,7 @@ public class GettingReviewsResponse {
         return page;
     }
 
-    public List<Review> getResults() {
+    public ArrayList<Review> getResults() {
         return results;
     }
 

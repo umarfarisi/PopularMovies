@@ -11,4 +11,5 @@
     <string name="movie_detail_video_button_text">Trailer</string>
     <string name="videos_title">Trailer</string>
     <string name="movie_detail_review_button_text">Review</string>
+    <string name="reviews_title">Reviews</string>
 </resources>

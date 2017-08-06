@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.myapplication.ReviewsActivity"
+    android:background="@android:color/darker_gray">
+
+    <android.support.v7.widget.Toolbar
+        android:theme="@style/ToolbarBlackTextAndOverflow"
+        android:id="@+id/tb_reviews_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@android:color/white"/>
+
+    <ProgressBar
+        android:visibility="gone"
+        android:background="@android:color/white"
+        android:indeterminate="true"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/pb_reviews_progress_sign"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_marginTop="@dimen/margin_all_small"
+        android:background="@android:color/white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/rv_reviews_content"/>
+</LinearLayout>

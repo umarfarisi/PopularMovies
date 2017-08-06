@@ -92,6 +92,8 @@ public class MovieDetailActivity extends BaseActivity {
     }
 
     public void onClickReviewButton(View view) {
-        //TODO
+        Intent intent = new Intent(this,ReviewsActivity.class);
+        intent.putExtra(Constants.MOVIE_EXTRA,movie);
+        startActivity(intent);
     }
 }
