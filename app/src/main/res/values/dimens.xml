@@ -7,4 +7,7 @@
     <dimen name="height_popular_movie_poster">230dp</dimen>
     <dimen name="height_movie_detail_poster">300dp</dimen>
     <dimen name="margin_all_standard">5dp</dimen>
+    <dimen name="margin_all_small">2dp</dimen>
+    <dimen name="padding_all_standard">8dp</dimen>
+    <dimen name="radius_movie_detail_all_button_background">10dp</dimen>
 </resources>

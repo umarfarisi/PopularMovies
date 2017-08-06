@@ -58,7 +58,7 @@ public class MainActivity extends BaseActivity {
         @Override
         public void onItemClick(Movie movie) {
             Intent intent = new Intent(MainActivity.this,MovieDetailActivity.class);
-            intent.putExtra(Constants.MOVIE,movie);
+            intent.putExtra(Constants.MOVIE_EXTRA,movie);
             MainActivity.this.startActivity(intent);
         }
     };

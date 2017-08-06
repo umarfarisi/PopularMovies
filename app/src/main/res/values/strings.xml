@@ -8,4 +8,7 @@
     <string name="movie_detail_release_date_text">Release date: </string>
     <string name="movie_detail_synopsis_text">Synopsis: </string>
     <string name="movies_poster_description">image poster of movie</string>
+    <string name="movie_detail_video_button_text">Trailer</string>
+    <string name="videos_title">Trailer</string>
+    <string name="movie_detail_review_button_text">Review</string>
 </resources>

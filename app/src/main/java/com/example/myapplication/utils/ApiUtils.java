@@ -10,4 +10,6 @@ public class ApiUtils {
 
     public static final String IMG_BASE_URL = "http://image.tmdb.org/t/p/w780/";
 
+    public static final String VIDEO_BASE_URL = "https://www.youtube.com/watch?v=";
+
 }

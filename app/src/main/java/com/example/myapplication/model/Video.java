@@ -1,5 +1,8 @@
 package com.example.myapplication.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -7,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
  * @created 06/08/2017
  */
 
-public class Video {
+public class Video implements Parcelable {
 
     @SerializedName("id")
     private String id;
@@ -74,4 +77,29 @@ public class Video {
                 ", key='" + key + '\'' +
                 '}';
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(name);
+        dest.writeString(key);
+    }
+
+    public static final Creator<Video> CREATOR = new Creator<Video>() {
+        @Override
+        public Video createFromParcel(Parcel source) {
+            return new Video(source.readString(),source.readString(),source.readString());
+        }
+
+        @Override
+        public Video[] newArray(int size) {
+            return new Video[size];
+        }
+    };
+
 }

@@ -3,6 +3,7 @@ package com.example.myapplication.api.response.detail.movie;
 import com.example.myapplication.model.Video;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,7 +16,7 @@ public class GettingVideosResponse {
     @SerializedName("id")
     private int id;
     @SerializedName("results")
-    private List<Video> results;
+    private ArrayList<Video> results;
 
     public GettingVideosResponse(){
 
@@ -25,7 +26,7 @@ public class GettingVideosResponse {
         return id;
     }
 
-    public List<Video> getResults() {
+    public ArrayList<Video> getResults() {
         return results;
     }
 }

@@ -1,6 +1,7 @@
 package com.example.myapplication.api.result;
 
 import com.example.myapplication.api.response.detail.movie.GettingReviewsResponse;
+import com.example.myapplication.api.response.detail.movie.GettingVideosResponse;
 
 /**
  * @author Muhammad Umar Farisi
@@ -8,6 +9,6 @@ import com.example.myapplication.api.response.detail.movie.GettingReviewsRespons
  */
 
 public interface MovieDetailResult {
-    class GettingVideosResult extends BaseResult<GettingVideosResult>{}
+    class GettingVideosResult extends BaseResult<GettingVideosResponse>{}
     class GettingReviewsResult extends BaseResult<GettingReviewsResponse>{}
 }
