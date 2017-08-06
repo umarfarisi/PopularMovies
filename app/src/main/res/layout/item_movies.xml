@@ -9,5 +9,5 @@
         android:scaleType="fitXY"
         android:layout_width="@dimen/width_popular_movie_poster"
         android:layout_height="@dimen/height_popular_movie_poster"
-        android:id="@+id/iv_popular_movie_poster"/>
+        android:id="@+id/iv_movies_poster"/>
 </FrameLayout>

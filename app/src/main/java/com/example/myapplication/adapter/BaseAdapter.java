@@ -2,22 +2,31 @@ package com.example.myapplication.adapter;
 
 import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
-import com.example.myapplication.model.Movie;
+import com.example.myapplication.adapter.listener.BaseListener;
 
 import java.util.ArrayList;
+
+import butterknife.ButterKnife;
 
 /**
  * @author Muhammad Umar Farisi
  * @created 06/08/2017
  */
 
-public abstract class BaseAdapter<E extends Parcelable, L extends ArrayList<E>, VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
+public abstract class BaseAdapter<E extends Parcelable, L extends ArrayList<E>> extends RecyclerView.Adapter<BaseAdapter.BaseViewHolder<E>> {
 
     protected L elements;
+    protected BaseListener<E> listener;
+
+    protected BaseAdapter(L elements, BaseListener<E> listener){
+        this.elements = elements;
+        this.listener = listener;
+    }
 
     protected BaseAdapter(L elements){
-        this.elements = elements;
+        this(elements,null);
     }
 
     public void addAll(ArrayList<E> newElements){
@@ -52,4 +61,34 @@ public abstract class BaseAdapter<E extends Parcelable, L extends ArrayList<E>, 
     public int getItemCount() {
         return elements.size();
     }
+
+    @Override
+    public void onBindViewHolder(BaseViewHolder holder, int position) {
+        holder.setData(elements.get(position));
+    }
+
+
+    public static class BaseViewHolder<E> extends RecyclerView.ViewHolder{
+
+        private E element;
+
+        public BaseViewHolder(View itemView, final BaseListener<E> listener) {
+            super(itemView);
+            ButterKnife.bind(this,itemView);
+            if(listener != null) {
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        listener.onItemClick(element);
+                    }
+                });
+            }
+        }
+
+        public void setData(E element){
+            this.element = element;
+        }
+
+    }
+
 }
