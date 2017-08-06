@@ -23,6 +23,9 @@
         android:id="@+id/pb_main_progress_sign"/>
 
     <TextView
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textAppearance="?android:textAppearanceLarge"
         android:layout_below="@+id/pb_main_progress_sign"
         android:visibility="gone"
         android:layout_width="match_parent"

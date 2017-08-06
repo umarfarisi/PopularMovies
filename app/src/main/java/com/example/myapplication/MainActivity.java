@@ -20,6 +20,7 @@ import com.example.myapplication.api.core.ApiRequest;
 import com.example.myapplication.api.core.ApiRequestQueue;
 import com.example.myapplication.api.response.movies.GettingMoviesResponse;
 import com.example.myapplication.api.result.MoviesResult;
+import com.example.myapplication.api.result.UnauthorizedResult;
 import com.example.myapplication.api.service.MoviesService;
 import com.example.myapplication.model.Movie;
 import com.example.myapplication.receiver.event.ConnectivityChangedEvent;
@@ -134,6 +135,7 @@ public class MainActivity extends BaseActivity {
         }
         if(adapter.getItemCount() == 0)mainEmptyTextTV.setVisibility(View.VISIBLE);
         else mainEmptyTextTV.setVisibility(View.GONE);
+        mainEmptyTextTV.setText(getString(R.string.main_empty_text));
         mainProgressSignPB.setVisibility(View.GONE);
     }
 
@@ -149,6 +151,14 @@ public class MainActivity extends BaseActivity {
             mainProgressSignPB.setVisibility(View.GONE);
             networkDisconnectingSignS.show();
         }
+    }
+
+    @Subscribe
+    public void onUnauthorized(UnauthorizedResult result){
+        if(adapter.getItemCount() == 0)mainEmptyTextTV.setVisibility(View.VISIBLE);
+        else mainEmptyTextTV.setVisibility(View.GONE);
+        mainEmptyTextTV.setText(getString(R.string.all_unauthorized_text));
+        mainProgressSignPB.setVisibility(View.GONE);
     }
 
     @Override

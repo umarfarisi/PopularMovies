@@ -1,8 +1,10 @@
 package com.example.myapplication.api.core;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.example.myapplication.api.result.BaseResult;
+import com.example.myapplication.api.result.UnauthorizedResult;
 import com.example.myapplication.utils.NetworkUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -28,8 +30,16 @@ public class ApiRequest <T> implements Comparable<ApiRequest<T>> {
         this.callback = new Callback<T>() {
             @Override
             public void onResponse(Call<T> call, Response<T> response) {
-                result.setResponse(response.body());
-                EventBus.getDefault().post(result);
+                Log.d("responseee","code: "+response.code()+", message: "+response.message()+", isSuccessfull: "+response.isSuccessful());
+                if(!response.isSuccessful() &&
+                        response.code() == 401 &&
+                        response.message() != null &&
+                        response.message().equals("Unauthorized")){
+                    EventBus.getDefault().post(new UnauthorizedResult());
+                }else {
+                    result.setResponse(response.body());
+                    EventBus.getDefault().post(result);
+                }
             }
 
             @Override
