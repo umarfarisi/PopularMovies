@@ -16,4 +16,5 @@
     <string name="all_unauthorized_text">your token for access this api is failed</string>
     <string name="videos_empty_text">no video found</string>
     <string name="reviews_empty_text">no review found</string>
+    <string name="all_connection_lost">connection is lost, please check your connection</string>
 </resources>

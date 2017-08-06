@@ -21,6 +21,7 @@ import com.example.myapplication.api.result.MovieDetailResult;
 import com.example.myapplication.api.service.MovieDetailService;
 import com.example.myapplication.model.Movie;
 import com.example.myapplication.model.Video;
+import com.example.myapplication.receiver.event.ConnectivityChangedEvent;
 import com.example.myapplication.utils.ApiKeyUtils;
 import com.example.myapplication.utils.ApiUtils;
 import com.example.myapplication.utils.Constants;
@@ -39,11 +40,13 @@ public class VideosActivity extends BaseActivity {
     ProgressBar videosProgressSignPB;
     @BindView(R.id.rv_videos_content)
     RecyclerView videosContentRV;
-    @BindView(R.id.tv_videos_empty_text)
-    TextView videosEmptyTextTV;
+    @BindView(R.id.tv_videos_text_sign)
+    TextView videosTextSignTV;
 
     private VideosAdapter videosAdapter;
     private Unbinder unbinder;
+
+    private boolean isRequestingApi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +79,7 @@ public class VideosActivity extends BaseActivity {
         if(movie != null){
             getSupportActionBar().setSubtitle(movie.getTitle());
             if(savedInstanceState == null){
+                isRequestingApi = true;
                 videosProgressSignPB.setVisibility(View.VISIBLE);
                 ApiRequestQueue.get().addRequestApi(new ApiRequest<>(
                         ApiHelper.service(MovieDetailService.class).getVideos(movie.getId(), ApiKeyUtils.API_KEY_V3),
@@ -89,6 +93,26 @@ public class VideosActivity extends BaseActivity {
         }
     }
 
+    @Subscribe
+    public void onConnectivityChange(ConnectivityChangedEvent event) {
+        if(event.isConnected()){
+            ApiRequestQueue.get().requestAllRequestedApi();
+            if(isRequestingApi){
+                videosProgressSignPB.setVisibility(View.VISIBLE);
+            }else{
+                videosProgressSignPB.setVisibility(View.GONE);
+            }
+        }else{
+            videosProgressSignPB.setVisibility(View.GONE);
+            if(videosAdapter.isEmpty()){
+                videosTextSignTV.setVisibility(View.VISIBLE);
+                videosTextSignTV.setText(getString(R.string.all_connection_lost));
+            }else{
+                videosTextSignTV.setVisibility(View.GONE);
+            }
+        }
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == android.R.id.home){
@@ -99,13 +123,15 @@ public class VideosActivity extends BaseActivity {
 
     @Subscribe
     public void onLoadVideos(MovieDetailResult.GettingVideosResult result){
+        isRequestingApi = false;
         videosProgressSignPB.setVisibility(View.GONE);
         videosAdapter.removeAll();
         videosAdapter.addAll(result.getResponse().getResults());
         if(videosAdapter.isEmpty()){
-            videosEmptyTextTV.setVisibility(View.VISIBLE);
+            videosTextSignTV.setVisibility(View.VISIBLE);
+            videosTextSignTV.setText(getString(R.string.videos_empty_text));
         }else{
-            videosEmptyTextTV.setVisibility(View.GONE);
+            videosTextSignTV.setVisibility(View.GONE);
         }
     }
 

@@ -1,6 +1,5 @@
 package com.example.myapplication;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,6 +18,7 @@ import com.example.myapplication.api.result.MovieDetailResult;
 import com.example.myapplication.api.service.MovieDetailService;
 import com.example.myapplication.model.Movie;
 import com.example.myapplication.model.Review;
+import com.example.myapplication.receiver.event.ConnectivityChangedEvent;
 import com.example.myapplication.utils.ApiKeyUtils;
 import com.example.myapplication.utils.Constants;
 
@@ -36,11 +36,13 @@ public class ReviewsActivity extends BaseActivity {
     ProgressBar reviewsProgressSignPB;
     @BindView(R.id.rv_reviews_content)
     RecyclerView reviewsContentRV;
-    @BindView(R.id.tv_reviews_empty_text)
-    TextView reviewsEmptySignTV;
+    @BindView(R.id.tv_reviews_text_sign)
+    TextView reviewsTextSignTV;
 
     private ReviewsAdapter reviewsAdapter;
     private Unbinder unbinder;
+
+    private boolean isRequestingApi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +67,7 @@ public class ReviewsActivity extends BaseActivity {
         if(movie != null){
             getSupportActionBar().setSubtitle(movie.getTitle());
             if(savedInstanceState == null){
+                isRequestingApi = true;
                 reviewsProgressSignPB.setVisibility(View.VISIBLE);
                 ApiRequestQueue.get().addRequestApi(new ApiRequest<>(
                         ApiHelper.service(MovieDetailService.class).getReviews(movie.getId(), ApiKeyUtils.API_KEY_V3),
@@ -87,14 +90,36 @@ public class ReviewsActivity extends BaseActivity {
     }
 
     @Subscribe
+    public void onConnectivityChange(ConnectivityChangedEvent event) {
+        if(event.isConnected()){
+            ApiRequestQueue.get().requestAllRequestedApi();
+            if(isRequestingApi){
+                reviewsProgressSignPB.setVisibility(View.VISIBLE);
+            }else{
+                reviewsProgressSignPB.setVisibility(View.GONE);
+            }
+        }else{
+            reviewsProgressSignPB.setVisibility(View.GONE);
+            if(reviewsAdapter.isEmpty()){
+                reviewsTextSignTV.setVisibility(View.VISIBLE);
+                reviewsTextSignTV.setText(getString(R.string.all_connection_lost));
+            }else{
+                reviewsTextSignTV.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    @Subscribe
     public void onLoadReview(MovieDetailResult.GettingReviewsResult result){
+        isRequestingApi = false;
         reviewsProgressSignPB.setVisibility(View.GONE);
         reviewsAdapter.removeAll();
         reviewsAdapter.addAll(result.getResponse().getResults());
         if(reviewsAdapter.isEmpty()){
-            reviewsEmptySignTV.setVisibility(View.VISIBLE);
+            reviewsTextSignTV.setVisibility(View.VISIBLE);
+            reviewsTextSignTV.setText(getString(R.string.reviews_empty_text));
         }else{
-            reviewsEmptySignTV.setVisibility(View.GONE);
+            reviewsTextSignTV.setVisibility(View.GONE);
         }
     }
 
