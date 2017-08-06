@@ -14,7 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.myapplication.adapter.MoviesAdapter;
-import com.example.myapplication.adapter.listener.PopularMoviesListener;
+import com.example.myapplication.adapter.listener.MoviesListener;
 import com.example.myapplication.api.core.ApiHelper;
 import com.example.myapplication.api.core.ApiRequest;
 import com.example.myapplication.api.core.ApiRequestQueue;
@@ -54,7 +54,7 @@ public class MainActivity extends BaseActivity {
 
     private MoviesAdapter adapter;
 
-    private PopularMoviesListener listener = new PopularMoviesListener() {
+    private MoviesListener listener = new MoviesListener() {
         @Override
         public void onPopularMovieClick(Movie movie) {
             Intent intent = new Intent(MainActivity.this,MovieDetailActivity.class);

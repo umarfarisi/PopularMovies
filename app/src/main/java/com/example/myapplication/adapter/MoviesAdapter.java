@@ -7,13 +7,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.example.myapplication.R;
-import com.example.myapplication.adapter.listener.PopularMoviesListener;
+import com.example.myapplication.adapter.listener.MoviesListener;
 import com.example.myapplication.model.Movie;
 import com.example.myapplication.utils.ApiUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,14 +24,14 @@ import butterknife.ButterKnife;
 @SuppressWarnings("ALL")
 public class MoviesAdapter extends BaseAdapter<Movie,ArrayList<Movie>,MoviesAdapter.MoviesViewHolder> {
 
-    private PopularMoviesListener listener;
+    private MoviesListener listener;
 
-    public MoviesAdapter(ArrayList<Movie> movies, PopularMoviesListener listener) {
+    public MoviesAdapter(ArrayList<Movie> movies, MoviesListener listener) {
         super(movies);
         this.listener = listener;
     }
 
-    public MoviesAdapter(PopularMoviesListener listener){
+    public MoviesAdapter(MoviesListener listener){
         this(new ArrayList<Movie>(),listener);
     }
 
@@ -64,7 +63,7 @@ public class MoviesAdapter extends BaseAdapter<Movie,ArrayList<Movie>,MoviesAdap
             Picasso.with(itemView.getContext()).load(ApiUtils.IMG_BASE_URL+movie.getPosterPath()).into(popularMoviePoster);
         }
 
-        public void setListener(final PopularMoviesListener listener){
+        public void setListener(final MoviesListener listener){
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
