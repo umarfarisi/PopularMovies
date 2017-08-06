@@ -13,7 +13,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.example.myapplication.adapter.PopularMoviesAdapter;
+import com.example.myapplication.adapter.MoviesAdapter;
 import com.example.myapplication.adapter.listener.PopularMoviesListener;
 import com.example.myapplication.api.core.ApiHelper;
 import com.example.myapplication.api.core.ApiRequest;
@@ -52,7 +52,7 @@ public class MainActivity extends BaseActivity {
 
     private Unbinder unbinder;
 
-    private PopularMoviesAdapter adapter;
+    private MoviesAdapter adapter;
 
     private PopularMoviesListener listener = new PopularMoviesListener() {
         @Override
@@ -74,7 +74,7 @@ public class MainActivity extends BaseActivity {
         networkDisconnectingSignS = Snackbar.make(mainRootRL,R.string.main_network_is_disconnection,Snackbar.LENGTH_INDEFINITE);
 
         //set up mainPopularListRV
-        adapter = new PopularMoviesAdapter(listener);
+        adapter = new MoviesAdapter(listener);
         mainPopularMoviesListRV.setLayoutManager(new GridLayoutManager(this, Constants.MOVIES_GRID_COLUMN));
         mainPopularMoviesListRV.setAdapter(adapter);
 
@@ -93,7 +93,7 @@ public class MainActivity extends BaseActivity {
 
         }else{
             //noinspection unchecked
-            adapter.addAllMovie(savedInstanceState.<Movie>getParcelableArrayList(Constants.MOVIES_DATA));
+            adapter.addAll(savedInstanceState.<Movie>getParcelableArrayList(Constants.MOVIES_DATA));
             mainPopularMoviesListRV.setVerticalScrollbarPosition(savedInstanceState.getInt(Constants.MOVIES_LIST_VERTICAL_SCROLLBAR_POSITION));
         }
 
@@ -129,8 +129,8 @@ public class MainActivity extends BaseActivity {
     @Subscribe
     public void onLoadPopularMovies(MoviesResult.GettingMoviesResult result){
         if(result.getResponse() != null) {
-            adapter.removeAllMovie();
-            adapter.addAllMovie(result.getResponse().getMovies());
+            adapter.removeAll();
+            adapter.addAll(result.getResponse().getMovies());
         }
         if(adapter.getItemCount() == 0)mainEmptyTextTV.setVisibility(View.VISIBLE);
         else mainEmptyTextTV.setVisibility(View.GONE);
@@ -154,7 +154,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList(Constants.MOVIES_DATA,  adapter.getAllMovie());
+        outState.putParcelableArrayList(Constants.MOVIES_DATA,  adapter.getElements());
         outState.putInt(Constants.MOVIES_LIST_VERTICAL_SCROLLBAR_POSITION,mainPopularMoviesListRV.getVerticalScrollbarPosition());
     }
 
