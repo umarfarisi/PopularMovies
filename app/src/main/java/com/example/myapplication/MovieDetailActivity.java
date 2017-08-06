@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -83,6 +84,18 @@ public class MovieDetailActivity extends BaseActivity {
     protected void onDestroy() {
         unbinder.unbind();
         super.onDestroy();
+    }
+
+
+    public void onClickFavoriteButton(View view) {
+        if(movie.getIsFavorite() == null || movie.getIsFavorite().equals(Movie.FAVORITE)){
+            movie.setIsFavorite(Movie.UNFAVORITE);
+            //TODO remove data from database
+        }else{
+            movie.setIsFavorite(Movie.FAVORITE);
+            //TODO save data to database
+        }
+        ((Button)view).setText(movie.getIsFavorite());
     }
 
     public void onClickVideoButton(View view) {

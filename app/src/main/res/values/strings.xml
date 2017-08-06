@@ -12,4 +12,5 @@
     <string name="videos_title">Trailer</string>
     <string name="movie_detail_review_button_text">Review</string>
     <string name="reviews_title">Reviews</string>
+    <string name="movie_detail_favorite_button_text">Favorite</string>
 </resources>

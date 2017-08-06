@@ -14,6 +14,9 @@ import java.util.Date;
 @SuppressWarnings("ALL")
 public class Movie implements Parcelable {
 
+    public static final String FAVORITE = "Favorite";
+    public static final String UNFAVORITE = "Unfavorite";
+
     @SerializedName("id")
     private int id;
     @SerializedName("title")
@@ -28,8 +31,9 @@ public class Movie implements Parcelable {
     private double userRating;
     @SerializedName("release_date")
     private Date releaseDate;
+    private String isFavorite;
 
-    public Movie(int id, String title, String posterPath, String thumbnailPath, String synopsis, double userRating, Date releaseDate) {
+    public Movie(int id, String title, String posterPath, String thumbnailPath, String synopsis, double userRating, Date releaseDate, String isFavorite) {
         this.id = id;
         this.title = title;
         this.posterPath = posterPath;
@@ -37,7 +41,10 @@ public class Movie implements Parcelable {
         this.synopsis = synopsis;
         this.userRating = userRating;
         this.releaseDate = releaseDate;
+        this.isFavorite = isFavorite;
     }
+
+
 
     public Movie(){
 
@@ -99,6 +106,14 @@ public class Movie implements Parcelable {
         this.releaseDate = releaseDate;
     }
 
+    public String getIsFavorite() {
+        return isFavorite;
+    }
+
+    public void setIsFavorite(String isFavorite) {
+        this.isFavorite = isFavorite;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -140,6 +155,7 @@ public class Movie implements Parcelable {
         dest.writeString(synopsis);
         dest.writeDouble(userRating);
         dest.writeSerializable(releaseDate);
+        dest.writeString(isFavorite);
     }
 
     public static final Creator<Movie> CREATOR = new Creator<Movie>() {
@@ -151,7 +167,8 @@ public class Movie implements Parcelable {
                     ,source.readString()
                     ,source.readString()
                     ,source.readDouble()
-                    , (Date) source.readSerializable());
+                    , (Date) source.readSerializable()
+                    , source.readString());
         }
 
         @Override
