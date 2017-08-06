@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.example.myapplication.adapter.VideosAdapter;
 import com.example.myapplication.adapter.listener.BaseListener;
@@ -38,6 +39,8 @@ public class VideosActivity extends BaseActivity {
     ProgressBar videosProgressSignPB;
     @BindView(R.id.rv_videos_content)
     RecyclerView videosContentRV;
+    @BindView(R.id.tv_videos_empty_text)
+    TextView videosEmptyTextTV;
 
     private VideosAdapter videosAdapter;
     private Unbinder unbinder;
@@ -97,7 +100,13 @@ public class VideosActivity extends BaseActivity {
     @Subscribe
     public void onLoadVideos(MovieDetailResult.GettingVideosResult result){
         videosProgressSignPB.setVisibility(View.GONE);
+        videosAdapter.removeAll();
         videosAdapter.addAll(result.getResponse().getResults());
+        if(videosAdapter.isEmpty()){
+            videosEmptyTextTV.setVisibility(View.VISIBLE);
+        }else{
+            videosEmptyTextTV.setVisibility(View.GONE);
+        }
     }
 
     @Override

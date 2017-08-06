@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.example.myapplication.adapter.ReviewsAdapter;
 import com.example.myapplication.api.core.ApiHelper;
@@ -35,6 +36,8 @@ public class ReviewsActivity extends BaseActivity {
     ProgressBar reviewsProgressSignPB;
     @BindView(R.id.rv_reviews_content)
     RecyclerView reviewsContentRV;
+    @BindView(R.id.tv_reviews_empty_text)
+    TextView reviewsEmptySignTV;
 
     private ReviewsAdapter reviewsAdapter;
     private Unbinder unbinder;
@@ -86,7 +89,13 @@ public class ReviewsActivity extends BaseActivity {
     @Subscribe
     public void onLoadReview(MovieDetailResult.GettingReviewsResult result){
         reviewsProgressSignPB.setVisibility(View.GONE);
+        reviewsAdapter.removeAll();
         reviewsAdapter.addAll(result.getResponse().getResults());
+        if(reviewsAdapter.isEmpty()){
+            reviewsEmptySignTV.setVisibility(View.VISIBLE);
+        }else{
+            reviewsEmptySignTV.setVisibility(View.GONE);
+        }
     }
 
     @Override

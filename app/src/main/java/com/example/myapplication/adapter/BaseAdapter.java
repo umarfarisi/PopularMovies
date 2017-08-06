@@ -57,6 +57,10 @@ public abstract class BaseAdapter<E extends Parcelable, L extends ArrayList<E>> 
         elements.set(elements.indexOf(oldElement), newElemnt);
     }
 
+    public boolean isEmpty(){
+        return elements.isEmpty();
+    }
+
     @Override
     public int getItemCount() {
         return elements.size();

@@ -14,4 +14,6 @@
     <string name="reviews_title">Reviews</string>
     <string name="movie_detail_favorite_button_text">Favorite</string>
     <string name="all_unauthorized_text">your token for access this api is failed</string>
+    <string name="videos_empty_text">no video found</string>
+    <string name="reviews_empty_text">no review found</string>
 </resources>
