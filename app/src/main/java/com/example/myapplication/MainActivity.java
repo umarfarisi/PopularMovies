@@ -150,6 +150,8 @@ public class MainActivity extends BaseActivity {
             }else{
                 if(sortedByState == SORTED_BY_FAVORITE){
                     adapter.remove(detailMovie);
+                    if(adapter.getItemCount() == 0)mainEmptyTextTV.setVisibility(View.VISIBLE);
+                    else mainEmptyTextTV.setVisibility(View.GONE);
                 }
             }
             cursor.close();

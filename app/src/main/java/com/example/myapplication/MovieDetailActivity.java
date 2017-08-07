@@ -4,8 +4,8 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -16,13 +16,10 @@ import android.widget.TextView;
 
 import com.example.myapplication.data.database.contract.PopularMovieContract;
 import com.example.myapplication.model.Movie;
-import com.example.myapplication.receiver.event.ConnectivityChangedEvent;
 import com.example.myapplication.utils.ApiUtils;
 import com.example.myapplication.utils.Constants;
 import com.example.myapplication.utils.DateUtils;
 import com.squareup.picasso.Picasso;
-
-import org.greenrobot.eventbus.Subscribe;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -100,7 +97,7 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     public void onClickFavoriteButton(View view) {
         ContentResolver resolver = getContentResolver();
-        if(movie.getIsFavorite() == null || movie.getIsFavorite().equals(Movie.FAVORITE)){
+        if(movie.getIsFavorite() == null || movie.getIsFavorite().equals(Movie.UNFAVORITE)){
             ContentValues values = new ContentValues();
             values.put(PopularMovieContract.MovieEntry._ID,movie.getId());
             values.put(PopularMovieContract.MovieEntry.COLUMN_TITLE,movie.getTitle());

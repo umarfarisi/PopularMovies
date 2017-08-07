@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
 import com.example.myapplication.data.database.PopularMovieDBHelper;
 import com.example.myapplication.data.database.contract.PopularMovieContract;
 
@@ -24,7 +25,7 @@ public class PopularMovieContentProvider extends ContentProvider{
 
     @Override
     public boolean onCreate() {
-        dbHelper = new PopularMovieDBHelper(getContext());
+        dbHelper = PopularMovieDBHelper.getInstance(getContext());
         uriMatcher = buildUriMatcher();
         return true;
     }
@@ -86,8 +87,7 @@ public class PopularMovieContentProvider extends ContentProvider{
         int code = uriMatcher.match(uri);
         switch (code){
             case CODE_MOVIE:
-                int rowCount = dbHelper.getWritableDatabase().update(PopularMovieContract.MovieEntry.TABLE_NAME,values,selection,selectionArgs);
-                return rowCount;
+                return dbHelper.getWritableDatabase().update(PopularMovieContract.MovieEntry.TABLE_NAME,values,selection,selectionArgs);
             default:
                 throw new UnsupportedOperationException("Unknown uri: "+uri.toString());
         }

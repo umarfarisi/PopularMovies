@@ -5,7 +5,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.example.myapplication.data.database.contract.PopularMovieContract;
-import com.example.myapplication.utils.GlobalVariable;
 
 /**
  * @author Muhammad Umar Farisi
@@ -19,14 +18,14 @@ public class PopularMovieDBHelper extends SQLiteOpenHelper{
 
     private static PopularMovieDBHelper instance;
 
-    public static PopularMovieDBHelper getInstance(){
+    public static PopularMovieDBHelper getInstance(Context context){
         if(instance == null){
-            instance = new PopularMovieDBHelper(GlobalVariable.APP_CONTEXT);
+            instance = new PopularMovieDBHelper(context);
         }
         return instance;
     }
 
-    public PopularMovieDBHelper(Context context) {
+    private PopularMovieDBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
