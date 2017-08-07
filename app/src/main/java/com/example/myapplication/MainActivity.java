@@ -3,7 +3,6 @@ package com.example.myapplication;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -49,12 +48,10 @@ public class MainActivity extends BaseActivity {
     RelativeLayout mainRootRL;
     @BindView(R.id.pb_main_progress_sign)
     ProgressBar mainProgressSignPB;
-    @BindView(R.id.tv_main_empty_text)
-    TextView mainEmptyTextTV;
+    @BindView(R.id.tv_main_text_sign)
+    TextView mainTextSignTV;
     @BindView(R.id.rv_main_popular_movies_list)
     RecyclerView mainPopularMoviesListRV;
-
-    private Snackbar networkDisconnectingSignS;
 
     private Unbinder unbinder;
 
@@ -89,8 +86,6 @@ public class MainActivity extends BaseActivity {
         setSupportActionBar(mainToolbarTB);
 
         detailMovie = null;
-
-        networkDisconnectingSignS = Snackbar.make(mainRootRL,R.string.main_network_is_disconnection,Snackbar.LENGTH_INDEFINITE);
 
         //set up mainPopularListRV
         adapter = new MoviesAdapter(listener);
@@ -137,7 +132,7 @@ public class MainActivity extends BaseActivity {
         if(detailMovie != null){
             if(sortedByState == SORTED_BY_FAVORITE){
                 adapter.remove(detailMovie);
-                renderEmptySign();
+                renderEmptySign(getString(R.string.main_empty_text));
             }else{
                 Cursor cursor = getContentResolver().query(PopularMovieContract.CONTENT_URI
                         , new String[]{PopularMovieContract.MovieEntry._ID}
@@ -235,8 +230,8 @@ public class MainActivity extends BaseActivity {
             adapter.addAll(movies);
         }
 
-        renderEmptySign();
-        mainEmptyTextTV.setText(getString(R.string.main_empty_text));
+        renderEmptySign(getString(R.string.main_empty_text));
+        mainTextSignTV.setText(getString(R.string.main_empty_text));
         mainProgressSignPB.setVisibility(View.GONE);
     }
 
@@ -247,17 +242,15 @@ public class MainActivity extends BaseActivity {
             if(adapter.getItemCount() == 0){
                 mainProgressSignPB.setVisibility(View.VISIBLE);
             }
-            networkDisconnectingSignS.dismiss();
         }else{
+            renderEmptySign(getString(R.string.all_connection_lost));
             mainProgressSignPB.setVisibility(View.GONE);
-            networkDisconnectingSignS.show();
         }
     }
 
     @Subscribe
     public void onUnauthorized(UnauthorizedResult result){
-        renderEmptySign();
-        mainEmptyTextTV.setText(getString(R.string.all_unauthorized_text));
+        renderEmptySign(getString(R.string.all_unauthorized_text));
         mainProgressSignPB.setVisibility(View.GONE);
     }
 
@@ -269,9 +262,12 @@ public class MainActivity extends BaseActivity {
         outState.putInt(Constants.STATE_SORTED_BY,sortedByState);
     }
 
-    private void renderEmptySign(){
-        if(adapter.getItemCount() == 0)mainEmptyTextTV.setVisibility(View.VISIBLE);
-        else mainEmptyTextTV.setVisibility(View.GONE);
+    private void renderEmptySign(String textSign){
+        if(adapter.getItemCount() == 0){
+            mainTextSignTV.setText(textSign);
+            mainTextSignTV.setVisibility(View.VISIBLE);
+        }
+        else mainTextSignTV.setVisibility(View.GONE);
     }
 
     @Override
