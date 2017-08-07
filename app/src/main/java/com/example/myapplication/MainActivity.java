@@ -136,25 +136,22 @@ public class MainActivity extends BaseActivity {
     protected void onStart() {
         super.onStart();
         if(detailMovie != null){
-            Cursor cursor = getContentResolver().query(PopularMovieContract.CONTENT_URI
-                    , new String[]{PopularMovieContract.MovieEntry._ID}
-                    , PopularMovieContract.MovieEntry._ID + " = ?"
-                    , new String[]{String.valueOf(detailMovie.getId())}
-                    , null);
-            if (cursor.moveToNext()) {
-                if(sortedByState == SORTED_BY_POPULAR || sortedByState == SORTED_BY_TOP) {
+            if(sortedByState == SORTED_BY_FAVORITE){
+                adapter.remove(detailMovie);
+                renderEmptySign();
+            }else{
+                Cursor cursor = getContentResolver().query(PopularMovieContract.CONTENT_URI
+                        , new String[]{PopularMovieContract.MovieEntry._ID}
+                        , PopularMovieContract.MovieEntry._ID + " = ?"
+                        , new String[]{String.valueOf(detailMovie.getId())}
+                        , null);
+                if (cursor.moveToNext()) {
                     favoriteMovieIds.add(detailMovie.getId());
                     detailMovie.setIsFavorite(Movie.FAVORITE);
-                    adapter.notifyDataSetChanged();
                 }
-            }else{
-                if(sortedByState == SORTED_BY_FAVORITE){
-                    adapter.remove(detailMovie);
-                    if(adapter.getItemCount() == 0)mainEmptyTextTV.setVisibility(View.VISIBLE);
-                    else mainEmptyTextTV.setVisibility(View.GONE);
-                }
+                cursor.close();
+
             }
-            cursor.close();
             detailMovie = null;
         }
     }
@@ -239,8 +236,7 @@ public class MainActivity extends BaseActivity {
             adapter.addAll(movies);
         }
 
-        if(adapter.getItemCount() == 0)mainEmptyTextTV.setVisibility(View.VISIBLE);
-        else mainEmptyTextTV.setVisibility(View.GONE);
+        renderEmptySign();
         mainEmptyTextTV.setText(getString(R.string.main_empty_text));
         mainProgressSignPB.setVisibility(View.GONE);
     }
@@ -261,8 +257,7 @@ public class MainActivity extends BaseActivity {
 
     @Subscribe
     public void onUnauthorized(UnauthorizedResult result){
-        if(adapter.getItemCount() == 0)mainEmptyTextTV.setVisibility(View.VISIBLE);
-        else mainEmptyTextTV.setVisibility(View.GONE);
+        renderEmptySign();
         mainEmptyTextTV.setText(getString(R.string.all_unauthorized_text));
         mainProgressSignPB.setVisibility(View.GONE);
     }
@@ -274,6 +269,11 @@ public class MainActivity extends BaseActivity {
         outState.putInt(Constants.MOVIES_LIST_VERTICAL_SCROLLBAR_POSITION,mainPopularMoviesListRV.getVerticalScrollbarPosition());
         outState.putIntegerArrayList(Constants.FAVORITE_MOVIE_ID,favoriteMovieIds);
         outState.putInt(Constants.SORTED_BY,sortedByState);
+    }
+
+    private void renderEmptySign(){
+        if(adapter.getItemCount() == 0)mainEmptyTextTV.setVisibility(View.VISIBLE);
+        else mainEmptyTextTV.setVisibility(View.GONE);
     }
 
     @Override

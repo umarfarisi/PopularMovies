@@ -22,21 +22,25 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        registerReceiver(connectivityChangeReceiver,new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
         connectivityChangeReceiver = new ConnectivityChangeReceiver();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        registerReceiver(connectivityChangeReceiver,new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
         EventBus.getDefault().register(this);
     }
 
     @Override
     protected void onStop() {
-        unregisterReceiver(connectivityChangeReceiver);
         EventBus.getDefault().unregister(this);
         super.onStop();
     }
 
+    @Override
+    protected void onDestroy() {
+        unregisterReceiver(connectivityChangeReceiver);
+        super.onDestroy();
+    }
 }
