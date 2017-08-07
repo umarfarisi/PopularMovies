@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
@@ -27,7 +28,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 @SuppressWarnings("ALL")
-public class MovieDetailActivity extends BaseActivity {
+public class MovieDetailActivity extends AppCompatActivity {
 
     @BindView(R.id.tb_movie_detail_toolbar)
     Toolbar movieDetailToolbarTB;

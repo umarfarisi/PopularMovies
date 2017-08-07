@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.GridLayoutManager;
@@ -22,6 +23,7 @@ import com.example.myapplication.api.response.movies.GettingMoviesResponse;
 import com.example.myapplication.api.result.MoviesResult;
 import com.example.myapplication.api.result.UnauthorizedResult;
 import com.example.myapplication.api.service.MoviesService;
+import com.example.myapplication.data.database.contract.PopularMovieContract;
 import com.example.myapplication.model.Movie;
 import com.example.myapplication.receiver.event.ConnectivityChangedEvent;
 import com.example.myapplication.utils.ApiKeyUtils;
@@ -29,6 +31,9 @@ import com.example.myapplication.utils.Constants;
 import com.example.myapplication.utils.NetworkUtils;
 
 import org.greenrobot.eventbus.Subscribe;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -55,14 +60,19 @@ public class MainActivity extends BaseActivity {
 
     private MoviesAdapter adapter;
 
+    private Movie detailMovie;
+
     private BaseListener<Movie> listener = new BaseListener<Movie>() {
         @Override
         public void onItemClick(Movie movie) {
+            detailMovie = movie;
             Intent intent = new Intent(MainActivity.this,MovieDetailActivity.class);
             intent.putExtra(Constants.MOVIE_EXTRA,movie);
             MainActivity.this.startActivity(intent);
         }
     };
+
+    private ArrayList<Integer> favoriteMovieIds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +81,8 @@ public class MainActivity extends BaseActivity {
         unbinder = ButterKnife.bind(this);
 
         setSupportActionBar(mainToolbarTB);
+
+        detailMovie = null;
 
         networkDisconnectingSignS = Snackbar.make(mainRootRL,R.string.main_network_is_disconnection,Snackbar.LENGTH_INDEFINITE);
 
@@ -92,12 +104,51 @@ public class MainActivity extends BaseActivity {
             ApiRequestQueue.get().addRequestApi(apiRequest);
             ApiRequestQueue.get().requestAllRequestedApi();
 
+            //get favorite id
+            favoriteMovieIds = new ArrayList<>();
+            Cursor cursor = getContentResolver().query(PopularMovieContract.CONTENT_URI,new String[]{PopularMovieContract.MovieEntry._ID},null,null,null);
+            int idIndex = cursor.getColumnIndex(PopularMovieContract.MovieEntry._ID);
+            while (cursor.moveToNext())
+                favoriteMovieIds.add(cursor.getInt(idIndex));
+
         }else{
             //noinspection unchecked
-            adapter.addAll(savedInstanceState.<Movie>getParcelableArrayList(Constants.MOVIES_DATA));
+            favoriteMovieIds = savedInstanceState.getIntegerArrayList(Constants.FAVORITE_MOVIE_ID);
+            ArrayList<Movie> movies = savedInstanceState.<Movie>getParcelableArrayList(Constants.MOVIES_DATA);
+            markFavoriteMovie(movies);
+            adapter.addAll(movies);
             mainPopularMoviesListRV.setVerticalScrollbarPosition(savedInstanceState.getInt(Constants.MOVIES_LIST_VERTICAL_SCROLLBAR_POSITION));
         }
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if(detailMovie != null){
+            Cursor cursor = getContentResolver().query(PopularMovieContract.CONTENT_URI
+                    ,new String[]{PopularMovieContract.MovieEntry._ID}
+                    , PopularMovieContract.MovieEntry._ID + " = ?"
+                    , new String[]{String.valueOf(detailMovie.getId())}
+                    ,null);
+            if(cursor.moveToNext()){
+                favoriteMovieIds.add(detailMovie.getId());
+                detailMovie.setIsFavorite(Movie.FAVORITE);
+                adapter.notifyDataSetChanged();
+            }
+            detailMovie = null;
+        }
+    }
+
+    private void markFavoriteMovie(ArrayList<Movie> movies){
+        for(int favoriteMovieId : favoriteMovieIds){
+            Movie dummy = new Movie();
+            dummy.setId(favoriteMovieId);
+            int indexOfFavoriteMovie = movies.indexOf(dummy);
+            if(indexOfFavoriteMovie != -1){
+                movies.get(indexOfFavoriteMovie).setIsFavorite(Movie.FAVORITE);
+            }
+        }
     }
 
     @Override
@@ -131,7 +182,9 @@ public class MainActivity extends BaseActivity {
     public void onLoadPopularMovies(MoviesResult.GettingMoviesResult result){
         if(result.getResponse() != null) {
             adapter.removeAll();
-            adapter.addAll(result.getResponse().getMovies());
+            ArrayList<Movie> movies = result.getResponse().getMovies();
+            markFavoriteMovie(movies);
+            adapter.addAll(movies);
         }
         if(adapter.getItemCount() == 0)mainEmptyTextTV.setVisibility(View.VISIBLE);
         else mainEmptyTextTV.setVisibility(View.GONE);
@@ -166,6 +219,7 @@ public class MainActivity extends BaseActivity {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList(Constants.MOVIES_DATA,  adapter.getElements());
         outState.putInt(Constants.MOVIES_LIST_VERTICAL_SCROLLBAR_POSITION,mainPopularMoviesListRV.getVerticalScrollbarPosition());
+        outState.putIntegerArrayList(Constants.FAVORITE_MOVIE_ID,favoriteMovieIds);
     }
 
     @Override

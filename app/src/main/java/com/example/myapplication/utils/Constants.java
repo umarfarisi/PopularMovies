@@ -12,4 +12,5 @@ public class Constants {
     public static final String MOVIE_EXTRA = "movie";
     public static final String VIDEOS_DATA = "videos data";
     public static final String REVIEW_DATA = "review data";
+    public static final String FAVORITE_MOVIE_ID = "favorite movie ids";
 }
