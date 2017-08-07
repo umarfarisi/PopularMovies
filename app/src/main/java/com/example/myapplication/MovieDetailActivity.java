@@ -1,15 +1,18 @@
 package com.example.myapplication;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.myapplication.data.database.contract.PopularMovieContract;
 import com.example.myapplication.model.Movie;
 import com.example.myapplication.receiver.event.ConnectivityChangedEvent;
 import com.example.myapplication.utils.ApiUtils;
@@ -38,6 +41,8 @@ public class MovieDetailActivity extends BaseActivity {
     TextView movieDetailUserRatingTV;
     @BindView(R.id.tv_movie_detail_release_date)
     TextView movieDetailReleaseDateTV;
+    @BindView(R.id.btn_movie_detail_favorite)
+    Button movieDetailFavoriteBtn;
 
     Unbinder unbinder;
 
@@ -66,18 +71,14 @@ public class MovieDetailActivity extends BaseActivity {
             movieDetailUserRatingTV.append(String.valueOf(movie.getUserRating()));
             movieDetailReleaseDateTV.setText(getString(R.string.movie_detail_release_date_text));
             movieDetailReleaseDateTV.append(DateUtils.datePosting(movie.getReleaseDate()));
+            if(movie.getIsFavorite() != null && movie.getIsFavorite().equals(Movie.FAVORITE)){
+                movieDetailFavoriteBtn.setText(Movie.UNFAVORITE);
+            }else{
+                movieDetailFavoriteBtn.setText(Movie.FAVORITE);
+            }
 
         }
 
-    }
-
-    @Subscribe
-    public void onConnectivityChange(ConnectivityChangedEvent event) {
-        if(event.isConnected()){
-            //TODO
-        }else{
-            //TODO
-        }
     }
 
     @Override
@@ -88,14 +89,29 @@ public class MovieDetailActivity extends BaseActivity {
 
 
     public void onClickFavoriteButton(View view) {
+        ContentResolver resolver = getContentResolver();
         if(movie.getIsFavorite() == null || movie.getIsFavorite().equals(Movie.FAVORITE)){
-            movie.setIsFavorite(Movie.UNFAVORITE);
-            //TODO remove data from database
+            ContentValues values = new ContentValues();
+            values.put(PopularMovieContract.MovieEntry._ID,movie.getId());
+            values.put(PopularMovieContract.MovieEntry.COLUMN_TITLE,movie.getTitle());
+            values.put(PopularMovieContract.MovieEntry.COLUMN_POSTER_PATH , movie.getPosterPath());
+            values.put(PopularMovieContract.MovieEntry.COLUMN_THUMBNAIL_PATH, movie.getThumbnailPath());
+            values.put(PopularMovieContract.MovieEntry.COLUMN_SYNOPSIS, movie.getSynopsis());
+            values.put(PopularMovieContract.MovieEntry.COLUMN_USER_RATING, movie.getUserRating());
+            values.put(PopularMovieContract.MovieEntry.COLUMN_RELEASE_DATE , movie.getReleaseDate().getTime());
+            values.put(PopularMovieContract.MovieEntry.COLUMN_FAVORITE, Movie.FAVORITE);
+            Uri uri = resolver.insert(PopularMovieContract.CONTENT_URI,values);
+            if(uri != null) {
+                movie.setIsFavorite(Movie.FAVORITE);
+                movieDetailFavoriteBtn.setText(Movie.UNFAVORITE);
+            }
         }else{
-            movie.setIsFavorite(Movie.FAVORITE);
-            //TODO save data to database
+            int rowCount = resolver.delete(PopularMovieContract.CONTENT_URI,PopularMovieContract.MovieEntry._ID + " = ?",new String[]{String.valueOf(movie.getId())});
+            if(rowCount > 0) {
+                movie.setIsFavorite(Movie.UNFAVORITE);
+                movieDetailFavoriteBtn.setText(Movie.FAVORITE);
+            }
         }
-        ((Button)view).setText(movie.getIsFavorite());
     }
 
     public void onClickVideoButton(View view) {

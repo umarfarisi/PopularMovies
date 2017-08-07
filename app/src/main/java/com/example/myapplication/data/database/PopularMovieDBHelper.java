@@ -32,14 +32,15 @@ public class PopularMovieDBHelper extends SQLiteOpenHelper{
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        final String CREATE_TABLE_MOVIE = "CREATE TABLE "+ PopularMovieContract.MovieContract.TABLE_NAME +"("+
-                PopularMovieContract.MovieContract._ID+" INTEGER(11) PRIMARY KEY,"+
-                PopularMovieContract.MovieContract.COLUMN_TITLE +" TEXT NOT NULL,"+
-                PopularMovieContract.MovieContract.COLUMN_POSTER_PATH +" TEXT NOT NULL,"+
-                PopularMovieContract.MovieContract.COLUMN_BACKDROP_PATH +" TEXT NOT NULL,"+
-                PopularMovieContract.MovieContract.COLUMN_OVERVIEW +" TEXT NOT NULL,"+
-                PopularMovieContract.MovieContract.COLUMN_VOTE_AVERAGE +" TEXT NOT NULL,"+
-                PopularMovieContract.MovieContract.COLUMN_RELEASE_DATE +" TEXT NOT NULL);";
+        final String CREATE_TABLE_MOVIE = "CREATE TABLE "+ PopularMovieContract.MovieEntry.TABLE_NAME +"("+
+                PopularMovieContract.MovieEntry._ID+" INTEGER(11) PRIMARY KEY,"+
+                PopularMovieContract.MovieEntry.COLUMN_TITLE +" TEXT NOT NULL,"+
+                PopularMovieContract.MovieEntry.COLUMN_POSTER_PATH +" TEXT NOT NULL,"+
+                PopularMovieContract.MovieEntry.COLUMN_THUMBNAIL_PATH +" TEXT NOT NULL,"+
+                PopularMovieContract.MovieEntry.COLUMN_SYNOPSIS +" TEXT NOT NULL,"+
+                PopularMovieContract.MovieEntry.COLUMN_USER_RATING +" DOUBLE,"+
+                PopularMovieContract.MovieEntry.COLUMN_RELEASE_DATE +" LONG,"+
+                PopularMovieContract.MovieEntry.COLUMN_FAVORITE + " TEXT NOT NULL);";
         db.execSQL(CREATE_TABLE_MOVIE);
     }
 

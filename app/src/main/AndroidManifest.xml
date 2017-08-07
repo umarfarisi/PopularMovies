@@ -25,7 +25,11 @@
             android:name=".MovieDetailActivity"
             android:parentActivityName=".MainActivity" />
         <activity android:name=".VideosActivity" />
-        <activity android:name=".ReviewsActivity"></activity>
+        <activity android:name=".ReviewsActivity"/>
+        <provider
+            android:authorities="com.example.myapplication"
+            android:name=".data.contentprovider.PopularMovieContentProvider"
+            android:exported="false"/>
     </application>
 
 </manifest>

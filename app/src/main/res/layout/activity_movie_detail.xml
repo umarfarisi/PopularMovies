@@ -112,7 +112,8 @@
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:text="@string/movie_detail_favorite_button_text"
-                    android:layout_marginRight="@dimen/margin_all_small"/>
+                    android:layout_marginRight="@dimen/margin_all_small"
+                    android:id="@+id/btn_movie_detail_favorite"/>
                 <Button
                     android:background="@drawable/movie_detail_video_button_background"
                     android:textColor="@android:color/white"
