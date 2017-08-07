@@ -33,7 +33,7 @@ import com.example.myapplication.utils.NetworkUtils;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -61,6 +61,12 @@ public class MainActivity extends BaseActivity {
     private MoviesAdapter adapter;
 
     private Movie detailMovie;
+
+    private final int SORTED_BY_POPULAR = 0;
+    private final int SORTED_BY_TOP = 1;
+    private final int SORTED_BY_FAVORITE = 2;
+
+    private int sortedByState;
 
     private BaseListener<Movie> listener = new BaseListener<Movie>() {
         @Override
@@ -110,9 +116,13 @@ public class MainActivity extends BaseActivity {
             int idIndex = cursor.getColumnIndex(PopularMovieContract.MovieEntry._ID);
             while (cursor.moveToNext())
                 favoriteMovieIds.add(cursor.getInt(idIndex));
+            cursor.close();
+
+            sortedByState = SORTED_BY_POPULAR;
 
         }else{
             //noinspection unchecked
+            sortedByState = savedInstanceState.getInt(Constants.SORTED_BY);
             favoriteMovieIds = savedInstanceState.getIntegerArrayList(Constants.FAVORITE_MOVIE_ID);
             ArrayList<Movie> movies = savedInstanceState.<Movie>getParcelableArrayList(Constants.MOVIES_DATA);
             markFavoriteMovie(movies);
@@ -127,15 +137,22 @@ public class MainActivity extends BaseActivity {
         super.onStart();
         if(detailMovie != null){
             Cursor cursor = getContentResolver().query(PopularMovieContract.CONTENT_URI
-                    ,new String[]{PopularMovieContract.MovieEntry._ID}
+                    , new String[]{PopularMovieContract.MovieEntry._ID}
                     , PopularMovieContract.MovieEntry._ID + " = ?"
                     , new String[]{String.valueOf(detailMovie.getId())}
-                    ,null);
-            if(cursor.moveToNext()){
-                favoriteMovieIds.add(detailMovie.getId());
-                detailMovie.setIsFavorite(Movie.FAVORITE);
-                adapter.notifyDataSetChanged();
+                    , null);
+            if (cursor.moveToNext()) {
+                if(sortedByState == SORTED_BY_POPULAR || sortedByState == SORTED_BY_TOP) {
+                    favoriteMovieIds.add(detailMovie.getId());
+                    detailMovie.setIsFavorite(Movie.FAVORITE);
+                    adapter.notifyDataSetChanged();
+                }
+            }else{
+                if(sortedByState == SORTED_BY_FAVORITE){
+                    adapter.remove(detailMovie);
+                }
             }
+            cursor.close();
             detailMovie = null;
         }
     }
@@ -163,11 +180,39 @@ public class MainActivity extends BaseActivity {
             Call<GettingMoviesResponse> service = null;
             switch (item.getItemId()) {
                 case R.id.menu_main_sort_by_most_popular:
+                    sortedByState = SORTED_BY_POPULAR;
                     service = ApiHelper.service(MoviesService.class).getMovies(MoviesService.ORDER_BY_POPULAR , ApiKeyUtils.API_KEY_V3);
                     break;
                 case R.id.menu_main_sort_by_top_rated:
+                    sortedByState = SORTED_BY_TOP;
                     service = ApiHelper.service(MoviesService.class).getMovies(MoviesService.ORDER_BY_TOP_RATED , ApiKeyUtils.API_KEY_V3);
                     break;
+                case R.id.menu_main_sort_by_favorite:
+                    sortedByState = SORTED_BY_FAVORITE;
+                    mainProgressSignPB.setVisibility(View.VISIBLE);
+                    Cursor cursor = getContentResolver().query(PopularMovieContract.CONTENT_URI,null,null,null,null);
+                    ArrayList<Movie> movies = new ArrayList<>();
+                    int idIndex = cursor.getColumnIndex(PopularMovieContract.MovieEntry._ID);
+                    int titleIndex = cursor.getColumnIndex(PopularMovieContract.MovieEntry.COLUMN_TITLE);
+                    int posterPathIndex = cursor.getColumnIndex(PopularMovieContract.MovieEntry.COLUMN_POSTER_PATH);
+                    int thumbnailPathIndex = cursor.getColumnIndex(PopularMovieContract.MovieEntry.COLUMN_THUMBNAIL_PATH);
+                    int synopsisIndex = cursor.getColumnIndex(PopularMovieContract.MovieEntry.COLUMN_SYNOPSIS);
+                    int userRatingIndex = cursor.getColumnIndex(PopularMovieContract.MovieEntry.COLUMN_USER_RATING);
+                    int releaseDateIndex = cursor.getColumnIndex(PopularMovieContract.MovieEntry.COLUMN_RELEASE_DATE);
+                    while(cursor.moveToNext()){
+                        Movie movie = new Movie(cursor.getInt(idIndex)
+                                ,cursor.getString(titleIndex)
+                                ,cursor.getString(posterPathIndex)
+                                ,cursor.getString(thumbnailPathIndex)
+                                ,cursor.getString(synopsisIndex)
+                                ,cursor.getDouble(userRatingIndex)
+                                ,new Date(cursor.getLong(releaseDateIndex)),Movie.FAVORITE);
+                        movies.add(movie);
+                    }
+                    loadPopularMovies(movies);
+                    cursor.close();
+                    break;
+
             }
             if(service != null) {
                 ApiRequestQueue.get().addRequestApi(new ApiRequest<>(service, new MoviesResult.GettingMoviesResult(), true));
@@ -180,12 +225,18 @@ public class MainActivity extends BaseActivity {
 
     @Subscribe
     public void onLoadPopularMovies(MoviesResult.GettingMoviesResult result){
-        if(result.getResponse() != null) {
-            adapter.removeAll();
-            ArrayList<Movie> movies = result.getResponse().getMovies();
+        if(result.getResponse() != null)
+            loadPopularMovies(result.getResponse().getMovies());
+    }
+
+    private void loadPopularMovies(ArrayList<Movie> movies){
+        adapter.removeAll();
+
+        if(movies != null && !movies.isEmpty()) {
             markFavoriteMovie(movies);
             adapter.addAll(movies);
         }
+
         if(adapter.getItemCount() == 0)mainEmptyTextTV.setVisibility(View.VISIBLE);
         else mainEmptyTextTV.setVisibility(View.GONE);
         mainEmptyTextTV.setText(getString(R.string.main_empty_text));
@@ -220,6 +271,7 @@ public class MainActivity extends BaseActivity {
         outState.putParcelableArrayList(Constants.MOVIES_DATA,  adapter.getElements());
         outState.putInt(Constants.MOVIES_LIST_VERTICAL_SCROLLBAR_POSITION,mainPopularMoviesListRV.getVerticalScrollbarPosition());
         outState.putIntegerArrayList(Constants.FAVORITE_MOVIE_ID,favoriteMovieIds);
+        outState.putInt(Constants.SORTED_BY,sortedByState);
     }
 
     @Override

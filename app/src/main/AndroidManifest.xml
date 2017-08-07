@@ -21,9 +21,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".MovieDetailActivity"
-            android:parentActivityName=".MainActivity" />
+        <activity android:name=".MovieDetailActivity"/>
         <activity android:name=".VideosActivity" />
         <activity android:name=".ReviewsActivity"/>
         <provider
