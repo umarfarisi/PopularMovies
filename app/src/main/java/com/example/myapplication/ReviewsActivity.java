@@ -75,7 +75,7 @@ public class ReviewsActivity extends BaseActivity {
                 ));
                 ApiRequestQueue.get().requestAllRequestedApi();
             }else{
-                reviewsAdapter.addAll(savedInstanceState.<Review>getParcelableArrayList(Constants.REVIEW_DATA));
+                reviewsAdapter.addAll(savedInstanceState.<Review>getParcelableArrayList(Constants.STATE_REVIEWS));
             }
 
         }
@@ -126,6 +126,6 @@ public class ReviewsActivity extends BaseActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList(Constants.REVIEW_DATA,reviewsAdapter.getElements());
+        outState.putParcelableArrayList(Constants.STATE_REVIEWS,reviewsAdapter.getElements());
     }
 }

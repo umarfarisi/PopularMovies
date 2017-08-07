@@ -122,12 +122,11 @@ public class MainActivity extends BaseActivity {
 
         }else{
             //noinspection unchecked
-            sortedByState = savedInstanceState.getInt(Constants.SORTED_BY);
-            favoriteMovieIds = savedInstanceState.getIntegerArrayList(Constants.FAVORITE_MOVIE_ID);
-            ArrayList<Movie> movies = savedInstanceState.<Movie>getParcelableArrayList(Constants.MOVIES_DATA);
+            sortedByState = savedInstanceState.getInt(Constants.STATE_SORTED_BY);
+            favoriteMovieIds = savedInstanceState.getIntegerArrayList(Constants.STATE_FAVORITE_MOVIE_IDS);
+            ArrayList<Movie> movies = savedInstanceState.<Movie>getParcelableArrayList(Constants.STATE_MOVIES);
             markFavoriteMovie(movies);
             adapter.addAll(movies);
-            mainPopularMoviesListRV.setVerticalScrollbarPosition(savedInstanceState.getInt(Constants.MOVIES_LIST_VERTICAL_SCROLLBAR_POSITION));
         }
 
     }
@@ -265,10 +264,9 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList(Constants.MOVIES_DATA,  adapter.getElements());
-        outState.putInt(Constants.MOVIES_LIST_VERTICAL_SCROLLBAR_POSITION,mainPopularMoviesListRV.getVerticalScrollbarPosition());
-        outState.putIntegerArrayList(Constants.FAVORITE_MOVIE_ID,favoriteMovieIds);
-        outState.putInt(Constants.SORTED_BY,sortedByState);
+        outState.putParcelableArrayList(Constants.STATE_MOVIES,  adapter.getElements());
+        outState.putIntegerArrayList(Constants.STATE_FAVORITE_MOVIE_IDS,favoriteMovieIds);
+        outState.putInt(Constants.STATE_SORTED_BY,sortedByState);
     }
 
     private void renderEmptySign(){

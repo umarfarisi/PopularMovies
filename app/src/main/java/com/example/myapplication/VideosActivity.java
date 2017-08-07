@@ -87,7 +87,7 @@ public class VideosActivity extends BaseActivity {
                 ));
                 ApiRequestQueue.get().requestAllRequestedApi();
             }else{
-                videosAdapter.addAll(savedInstanceState.<Video>getParcelableArrayList(Constants.VIDEOS_DATA));
+                videosAdapter.addAll(savedInstanceState.<Video>getParcelableArrayList(Constants.STATE_VIDEOS));
             }
 
         }
@@ -138,7 +138,7 @@ public class VideosActivity extends BaseActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList(Constants.VIDEOS_DATA,videosAdapter.getElements());
+        outState.putParcelableArrayList(Constants.STATE_VIDEOS,videosAdapter.getElements());
     }
 
 }
